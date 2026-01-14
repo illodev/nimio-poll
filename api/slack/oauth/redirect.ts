@@ -65,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const clientSecret = process.env.SLACK_CLIENT_SECRET;
   const redirectUri =
     process.env.SLACK_REDIRECT_URI ||
-    `https://${req.headers.host}/api/slack/oauth/redirect`;
+    `${req.headers.host}/api/slack/oauth/redirect`;
 
   if (!clientId || !clientSecret) {
     return res.status(500).send("OAuth credentials not configured");
