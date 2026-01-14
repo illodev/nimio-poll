@@ -23,6 +23,7 @@
 1. Ve a [api.slack.com/apps](https://api.slack.com/apps) y crea una nueva app
 2. Selecciona "From scratch" y dale un nombre (ej: "Nimio Poll")
 3. En **OAuth & Permissions**, añade estos Bot Token Scopes:
+
    - `chat:write`
    - `chat:write.public`
    - `commands`
@@ -31,17 +32,19 @@
    - `groups:read`
 
 4. En **Slash Commands**, crea un nuevo comando:
+
    - Command: `/poll`
-   - Request URL: `https://tu-app.vercel.app/api/slack/command`
+   - Request URL: `https://nimio-poll.vercel.app/api/slack/command`
    - Description: `Crear encuestas modernas`
    - Usage Hint: `"Pregunta" "Opción 1" "Opción 2" [--anonymous] [--multi]`
 
 5. En **Interactivity & Shortcuts**:
+
    - Activa Interactivity
-   - Request URL: `https://tu-app.vercel.app/api/slack/interactions`
+   - Request URL: `https://nimio-poll.vercel.app/api/slack/interactions`
 
 6. En **OAuth & Permissions**:
-   - Add Redirect URL: `https://tu-app.vercel.app/api/slack/oauth/redirect`
+   - Add Redirect URL: `https://nimio-poll.vercel.app/api/slack/oauth/redirect`
 
 ### 2. Desplegar en Vercel
 
@@ -65,23 +68,34 @@ cp .env.example .env.local
 vercel
 ```
 
-### 3. Configurar Vercel KV
+### 3. Configurar Upstash Redis
 
-1. En el dashboard de Vercel, ve a **Storage**
-2. Crea un nuevo **KV Database**
-3. Conecta la base de datos a tu proyecto
+**Opción A - Desde Vercel Marketplace (recomendado):**
+
+1. En el dashboard de Vercel, ve a **Storage** > **Browse Marketplace**
+2. Selecciona **Upstash Redis**
+3. Crea una nueva base de datos y conecta a tu proyecto
 4. Las variables de entorno se configuran automáticamente
+
+**Opción B - Desde Upstash directamente:**
+
+1. Ve a [console.upstash.com](https://console.upstash.com)
+2. Crea una nueva base de datos Redis
+3. Copia `UPSTASH_REDIS_REST_KV_URL` y `UPSTASH_REDIS_REST_KV_REST_API_TOKEN`
+4. Añádelas en Vercel > Settings > Environment Variables
 
 ### 4. Variables de Entorno
 
 Configura estas variables en Vercel:
 
-| Variable | Descripción |
-|----------|-------------|
-| `SLACK_CLIENT_ID` | Client ID de tu Slack App |
-| `SLACK_CLIENT_SECRET` | Client Secret de tu Slack App |
-| `SLACK_SIGNING_SECRET` | Signing Secret para verificar requests |
-| `SLACK_BOT_TOKEN` | Bot Token (para single workspace) |
+| Variable                               | Descripción                            |
+| -------------------------------------- | -------------------------------------- |
+| `SLACK_CLIENT_ID`                      | Client ID de tu Slack App              |
+| `SLACK_CLIENT_SECRET`                  | Client Secret de tu Slack App          |
+| `SLACK_SIGNING_SECRET`                 | Signing Secret para verificar requests |
+| `SLACK_BOT_TOKEN`                      | Bot Token (para single workspace)      |
+| `UPSTASH_REDIS_REST_KV_URL`            | URL de Upstash Redis                   |
+| `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Token de Upstash Redis                 |
 
 ## 📖 Uso
 
@@ -93,14 +107,14 @@ Configura estas variables en Vercel:
 
 ### Opciones disponibles
 
-| Opción | Descripción |
-|--------|-------------|
-| `--anonymous` o `-a` | Votación anónima |
-| `--multi` o `-m` | Permitir múltiples votos |
-| `--limit=N` | Limitar a N votos por persona |
-| `--expires=N` | Expira en N minutos |
-| `--hide-voters` | Ocultar nombres de votantes |
-| `--allow-add` | Permitir añadir opciones |
+| Opción               | Descripción                   |
+| -------------------- | ----------------------------- |
+| `--anonymous` o `-a` | Votación anónima              |
+| `--multi` o `-m`     | Permitir múltiples votos      |
+| `--limit=N`          | Limitar a N votos por persona |
+| `--expires=N`        | Expira en N minutos           |
+| `--hide-voters`      | Ocultar nombres de votantes   |
+| `--allow-add`        | Permitir añadir opciones      |
 
 ### Ejemplos
 
@@ -184,9 +198,9 @@ export const EMOJIS = {
 
 ```typescript
 export const LIMITS = {
-  maxOptions: 10,          // Máximo de opciones
-  maxQuestionLength: 300,  // Longitud de pregunta
-  maxOptionLength: 150,    // Longitud de opción
+  maxOptions: 10, // Máximo de opciones
+  maxQuestionLength: 300, // Longitud de pregunta
+  maxOptionLength: 150, // Longitud de opción
 };
 ```
 

@@ -151,7 +151,7 @@ export interface Block {
 }
 
 export interface TextObject {
-  type: 'plain_text' | 'mrkdwn';
+  type: "plain_text" | "mrkdwn";
   text: string;
   emoji?: boolean;
 }
@@ -162,7 +162,7 @@ export interface Accessory {
   value?: string;
   text?: TextObject;
   options?: SelectOption[];
-  style?: 'primary' | 'danger';
+  style?: "primary" | "danger";
 }
 
 export interface ContextElement {
@@ -170,7 +170,7 @@ export interface ContextElement {
   text?: string;
   action_id?: string;
   value?: string;
-  style?: 'primary' | 'danger';
+  style?: "primary" | "danger";
   url?: string;
 }
 
@@ -179,7 +179,7 @@ export interface ActionElement {
   action_id?: string;
   value?: string;
   text?: TextObject;
-  style?: 'primary' | 'danger';
+  style?: "primary" | "danger";
   url?: string;
 }
 

@@ -1,16 +1,20 @@
 // Slack API helpers and interaction handlers
-import { WebClient } from '@slack/web-api';
-import { SlackInteractionPayload, SlackOAuthPayload, TeamInstallation } from './types';
-import { getStorage } from './storage';
-import { 
-  handleVote, 
-  closePoll, 
-  addPollOption, 
+import { WebClient } from "@slack/web-api";
+import {
+  SlackInteractionPayload,
+  SlackOAuthPayload,
+  TeamInstallation,
+} from "./types";
+import { getStorage } from "./storage";
+import {
+  handleVote,
+  closePoll,
+  addPollOption,
   refreshPoll,
-  getPollForModal 
-} from './poll-service';
-import { buildAddOptionModal } from './blocks';
-import { ACTION_IDS, MESSAGES } from './constants';
+  getPollForModal,
+} from "./poll-service";
+import { buildAddOptionModal } from "./blocks";
+import { ACTION_IDS, MESSAGES } from "./constants";
 
 const Storage = getStorage();
 
@@ -24,38 +28,48 @@ export async function handleInteraction(
   const { type, user, actions, trigger_id } = payload;
 
   // Handle block actions (button clicks)
-  if (type === 'block_actions' && actions && actions.length > 0) {
+  if (type === "block_actions" && actions && actions.length > 0) {
     const action = actions[0];
     const actionId = action.action_id;
-    const value = action.value || '';
+    const value = action.value || "";
 
     // Vote action
     if (actionId.startsWith(ACTION_IDS.vote)) {
-      const [pollId, optionId] = value.split('|');
-      const result = await handleVote(pollId, optionId, user.id, user.name, botToken);
-      
+      const [pollId, optionId] = value.split("|");
+      const result = await handleVote(
+        pollId,
+        optionId,
+        user.id,
+        user.name,
+        botToken
+      );
+
       if (!result.success) {
         return {
           response: {
-            response_type: 'ephemeral',
+            response_type: "ephemeral",
             replace_original: false,
             text: result.message,
           },
         };
       }
-      
-      return { response: { response_type: 'ephemeral', text: '' } };
+
+      return { response: { response_type: "ephemeral", text: "" } };
     }
 
     // Close poll action
     if (actionId === ACTION_IDS.closePoll) {
       const result = await closePoll(value, user.id, botToken);
-      
+
       return {
         response: {
-          response_type: 'ephemeral',
+          response_type: "ephemeral",
           replace_original: false,
-          text: result.message || (result.success ? MESSAGES.success.pollClosed : MESSAGES.errors.notAuthorized),
+          text:
+            result.message ||
+            (result.success
+              ? MESSAGES.success.pollClosed
+              : MESSAGES.errors.notAuthorized),
         },
       };
     }
@@ -63,17 +77,22 @@ export async function handleInteraction(
     // Refresh poll action
     if (actionId === ACTION_IDS.refreshPoll) {
       await refreshPoll(value, botToken);
-      return { response: { response_type: 'ephemeral', text: '🔄 Encuesta actualizada' } };
+      return {
+        response: {
+          response_type: "ephemeral",
+          text: "🔄 Encuesta actualizada",
+        },
+      };
     }
 
     // Add option action - open modal
     if (actionId === ACTION_IDS.addOption) {
       const poll = await getPollForModal(value);
-      
+
       if (!poll) {
         return {
           response: {
-            response_type: 'ephemeral',
+            response_type: "ephemeral",
             text: MESSAGES.errors.pollNotFound,
           },
         };
@@ -87,18 +106,18 @@ export async function handleInteraction(
           view: buildAddOptionModal(poll.id, poll.question) as any,
         });
       } catch (error) {
-        console.error('Error opening modal:', error);
+        console.error("Error opening modal:", error);
       }
 
-      return { response: { response_type: 'ephemeral', text: '' } };
+      return { response: { response_type: "ephemeral", text: "" } };
     }
   }
 
   // Handle modal submissions
-  if (type === 'view_submission') {
+  if (type === "view_submission") {
     const viewPayload = payload as any;
     const callbackId = viewPayload.view?.callback_id;
-    
+
     if (callbackId === ACTION_IDS.submitNewOption) {
       const pollId = viewPayload.view?.private_metadata;
       const values = viewPayload.view?.state?.values;
@@ -116,16 +135,16 @@ export async function handleInteraction(
         if (!result.success) {
           return {
             response: {
-              response_action: 'errors',
+              response_action: "errors",
               errors: {
-                new_option_input: result.message || 'Error al añadir opción',
+                new_option_input: result.message || "Error al añadir opción",
               },
             },
           };
         }
       }
 
-      return { response: { response_action: 'clear' } };
+      return { response: { response_action: "clear" } };
     }
   }
 
@@ -144,15 +163,15 @@ export async function handleOAuthCallback(
   const client = new WebClient();
 
   try {
-    const result = await client.oauth.v2.access({
+    const result = (await client.oauth.v2.access({
       client_id: clientId,
       client_secret: clientSecret,
       code,
       redirect_uri: redirectUri,
-    }) as SlackOAuthPayload;
+    })) as SlackOAuthPayload;
 
     if (!result.ok) {
-      return { success: false, error: 'OAuth failed' };
+      return { success: false, error: "OAuth failed" };
     }
 
     // Save installation
@@ -169,8 +188,8 @@ export async function handleOAuthCallback(
 
     return { success: true, teamName: result.team.name };
   } catch (error) {
-    console.error('OAuth error:', error);
-    return { success: false, error: 'Error during OAuth process' };
+    console.error("OAuth error:", error);
+    return { success: false, error: "Error during OAuth process" };
   }
 }
 
@@ -202,7 +221,7 @@ export async function sendEphemeralMessage(
       blocks,
     });
   } catch (error) {
-    console.error('Error sending ephemeral message:', error);
+    console.error("Error sending ephemeral message:", error);
   }
 }
 
@@ -215,11 +234,11 @@ export async function respondToUrl(
 ): Promise<void> {
   try {
     await fetch(responseUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(message),
     });
   } catch (error) {
-    console.error('Error responding to URL:', error);
+    console.error("Error responding to URL:", error);
   }
 }

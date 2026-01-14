@@ -1,6 +1,6 @@
 // OAuth Redirect - Handles callback from Slack
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handleOAuthCallback } from '../../../lib/slack';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { handleOAuthCallback } from "../../../lib/slack";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { code, error } = req.query;
@@ -57,23 +57,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     `);
   }
 
-  if (!code || typeof code !== 'string') {
-    return res.status(400).send('Missing authorization code');
+  if (!code || typeof code !== "string") {
+    return res.status(400).send("Missing authorization code");
   }
 
   const clientId = process.env.SLACK_CLIENT_ID;
   const clientSecret = process.env.SLACK_CLIENT_SECRET;
-  const redirectUri = process.env.SLACK_REDIRECT_URI || `https://${req.headers.host}/api/slack/oauth/redirect`;
+  const redirectUri =
+    process.env.SLACK_REDIRECT_URI ||
+    `https://${req.headers.host}/api/slack/oauth/redirect`;
 
   if (!clientId || !clientSecret) {
-    return res.status(500).send('OAuth credentials not configured');
+    return res.status(500).send("OAuth credentials not configured");
   }
 
   try {
-    const result = await handleOAuthCallback(code, clientId, clientSecret, redirectUri);
+    const result = await handleOAuthCallback(
+      code,
+      clientId,
+      clientSecret,
+      redirectUri
+    );
 
     if (!result.success) {
-      throw new Error(result.error || 'OAuth failed');
+      throw new Error(result.error || "OAuth failed");
     }
 
     // Success page
@@ -169,9 +176,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         </body>
       </html>
     `);
-
   } catch (error) {
-    console.error('OAuth error:', error);
+    console.error("OAuth error:", error);
     return res.status(500).send(`
       <!DOCTYPE html>
       <html>

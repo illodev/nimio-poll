@@ -21,8 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@slack/web-api": "^7.0.0",
-    "@vercel/kv": "^2.0.0",
-    "crypto": "^1.0.1"
+    "@upstash/redis": "^1.28.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
