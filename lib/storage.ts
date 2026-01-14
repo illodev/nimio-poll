@@ -4,10 +4,10 @@ import { Poll, TeamInstallation } from "./types";
 
 // Initialize Redis client (will be null if not configured)
 const redis =
-  process.env.UPSTASH_REDIS_REST_KV_URL &&
+  process.env.UPSTASH_REDIS_REST_KV_REST_API_URL &&
   process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN
     ? new Redis({
-        url: process.env.UPSTASH_REDIS_REST_KV_URL,
+        url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL,
         token: process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN,
       })
     : null;
@@ -23,7 +23,7 @@ export class PollStorage {
   private static getRedis(): Redis {
     if (!redis) {
       throw new Error(
-        "Redis not configured. Set UPSTASH_REDIS_REST_KV_URL and UPSTASH_REDIS_REST_KV_REST_API_TOKEN"
+        "Redis not configured. Set UPSTASH_REDIS_REST_KV_REST_API_URL and UPSTASH_REDIS_REST_KV_REST_API_TOKEN"
       );
     }
     return redis;
@@ -224,7 +224,7 @@ export class InMemoryStorage {
 export function getStorage(): typeof PollStorage | typeof InMemoryStorage {
   // Use Upstash Redis in production, in-memory for development
   if (
-    process.env.UPSTASH_REDIS_REST_KV_URL &&
+    process.env.UPSTASH_REDIS_REST_KV_REST_API_URL &&
     process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN
   ) {
     return PollStorage;

@@ -81,7 +81,7 @@ vercel
 
 1. Ve a [console.upstash.com](https://console.upstash.com)
 2. Crea una nueva base de datos Redis
-3. Copia `UPSTASH_REDIS_REST_KV_URL` y `UPSTASH_REDIS_REST_KV_REST_API_TOKEN`
+3. Copia `UPSTASH_REDIS_REST_KV_REST_API_URL` y `UPSTASH_REDIS_REST_KV_REST_API_TOKEN`
 4. Añádelas en Vercel > Settings > Environment Variables
 
 ### 4. Variables de Entorno
@@ -94,7 +94,7 @@ Configura estas variables en Vercel:
 | `SLACK_CLIENT_SECRET`                  | Client Secret de tu Slack App          |
 | `SLACK_SIGNING_SECRET`                 | Signing Secret para verificar requests |
 | `SLACK_BOT_TOKEN`                      | Bot Token (para single workspace)      |
-| `UPSTASH_REDIS_REST_KV_URL`            | URL de Upstash Redis                   |
+| `UPSTASH_REDIS_REST_KV_REST_API_URL`   | URL de Upstash Redis                   |
 | `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Token de Upstash Redis                 |
 
 ## 📖 Uso
