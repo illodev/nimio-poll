@@ -1,0 +1,66 @@
+{
+  "_metadata": {
+    "major_version": 2,
+    "minor_version": 1
+  },
+  "display_information": {
+    "name": "Nimio Poll",
+    "description": "Encuestas modernas y elegantes para Slack",
+    "background_color": "#667eea",
+    "long_description": "Nimio Poll es la herramienta definitiva para crear encuestas en Slack. Con una interfaz moderna, votación en tiempo real, opciones de anonimato y mucho más. Crea encuestas profesionales en segundos con el comando /poll."
+  },
+  "features": {
+    "app_home": {
+      "home_tab_enabled": false,
+      "messages_tab_enabled": false,
+      "messages_tab_read_only_enabled": false
+    },
+    "bot_user": {
+      "display_name": "Nimio Poll",
+      "always_online": true
+    },
+    "slash_commands": [
+      {
+        "command": "/poll",
+        "url": "https://YOUR_VERCEL_URL/api/slack/command",
+        "description": "Crear una encuesta moderna",
+        "usage_hint": "\"Pregunta\" \"Opción 1\" \"Opción 2\" [--anonymous] [--multi]",
+        "should_escape": false
+      }
+    ]
+  },
+  "oauth_config": {
+    "redirect_urls": [
+      "https://YOUR_VERCEL_URL/api/slack/oauth/redirect"
+    ],
+    "scopes": {
+      "bot": [
+        "chat:write",
+        "chat:write.public",
+        "commands",
+        "users:read",
+        "channels:read",
+        "groups:read",
+        "im:read",
+        "mpim:read"
+      ],
+      "user": []
+    }
+  },
+  "settings": {
+    "event_subscriptions": {
+      "request_url": "https://YOUR_VERCEL_URL/api/slack/events",
+      "bot_events": [
+        "app_uninstalled",
+        "tokens_revoked"
+      ]
+    },
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://YOUR_VERCEL_URL/api/slack/interactions"
+    },
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}

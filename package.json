@@ -1,0 +1,38 @@
+{
+  "name": "nimio-poll",
+  "version": "1.0.0",
+  "description": "Modern polling app for Slack - Better than Simple Poll",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "type-check": "tsc --noEmit",
+    "vercel-build": "tsc"
+  },
+  "keywords": [
+    "slack",
+    "poll",
+    "voting",
+    "survey",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/web-api": "^7.0.0",
+    "@vercel/kv": "^2.0.0",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2",
+    "vercel": "^32.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
