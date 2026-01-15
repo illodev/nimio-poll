@@ -27,7 +27,7 @@ We reserve the right to modify these terms at any time. Changes will be notified
 
 ## 6. Contact
 
-For any questions, contact: contacto@nimio.dev
+For any questions, contact: illodevcode@gmail.com
 
 ---
 

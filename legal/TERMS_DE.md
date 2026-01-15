@@ -27,7 +27,7 @@ Wir behalten uns das Recht vor, diese Bedingungen jederzeit zu ändern. Änderun
 
 ## 6. Kontakt
 
-Bei Fragen wenden Sie sich an: contacto@nimio.dev
+Bei Fragen wenden Sie sich an: illodevcode@gmail.com
 
 ---
 

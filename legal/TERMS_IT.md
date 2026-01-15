@@ -27,7 +27,7 @@ Ci riserviamo il diritto di modificare questi termini in qualsiasi momento. Le m
 
 ## 6. Contatto
 
-Per qualsiasi domanda, contatta: contacto@nimio.dev
+Per qualsiasi domanda, contatta: illodevcode@gmail.com
 
 ---
 

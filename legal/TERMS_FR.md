@@ -27,7 +27,7 @@ Nous nous réservons le droit de modifier ces conditions à tout moment. Les mod
 
 ## 6. Contact
 
-Pour toute question, contactez : contacto@nimio.dev
+Pour toute question, contactez : illodevcode@gmail.com
 
 ---
 
