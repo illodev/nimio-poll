@@ -5,6 +5,21 @@ import { getBotToken } from "../../lib/slack";
 import { verifySlackSignature, parseUrlEncodedBody } from "../../lib/utils";
 import { buildErrorBlocks } from "../../lib/blocks";
 import { MESSAGES } from "../../lib/constants";
+import { SlackCommandPayload } from "../../lib/types";
+
+// Helper to read raw body from stream
+async function readRawBody(req: VercelRequest): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", (chunk: Buffer) => {
+      data += chunk.toString();
+    });
+    req.on("end", () => {
+      resolve(data);
+    });
+    req.on("error", reject);
+  });
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Only accept POST requests
@@ -13,11 +28,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Get raw body for signature verification
-    const rawBody =
-      typeof req.body === "string"
-        ? req.body
-        : new URLSearchParams(req.body).toString();
+    // Read raw body for signature verification
+    const rawBody = await readRawBody(req);
 
     // Verify Slack signature
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
@@ -32,16 +44,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         rawBody
       );
       if (!isValid) {
-        console.error("Signature verification failed");
+        console.error("Signature verification failed for command");
         return res
           .status(401)
           .json({ error: MESSAGES.errors.verificationFailed });
       }
     }
 
-    // Parse body
-    const payload =
-      typeof req.body === "string" ? parseUrlEncodedBody(req.body) : req.body;
+    // Parse body from raw string
+    const payload = parseUrlEncodedBody(
+      rawBody
+    ) as unknown as SlackCommandPayload;
 
     // Get bot token for team
     let botToken = await getBotToken(payload.team_id);
@@ -99,8 +112,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 // Disable body parsing to get raw body for signature verification
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: "1mb",
-    },
+    bodyParser: false,
   },
 };

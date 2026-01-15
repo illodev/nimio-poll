@@ -3,19 +3,18 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { handleInteraction, getBotToken } from "../../lib/slack";
 import { verifySlackSignature } from "../../lib/utils";
 
-// Helper to get raw body from request
-async function getRawBody(req: VercelRequest): Promise<string> {
-  if (typeof req.body === "string") {
-    return req.body;
-  }
-
-  // If body is already parsed as object, we need to reconstruct it
-  // This happens when bodyParser is enabled
-  if (req.body && typeof req.body === "object") {
-    return new URLSearchParams(req.body as Record<string, string>).toString();
-  }
-
-  return "";
+// Helper to read raw body from stream
+async function readRawBody(req: VercelRequest): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", (chunk: Buffer) => {
+      data += chunk.toString();
+    });
+    req.on("end", () => {
+      resolve(data);
+    });
+    req.on("error", reject);
+  });
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -25,8 +24,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Get raw body for signature verification
-    const rawBody = await getRawBody(req);
+    // Read raw body for signature verification
+    const rawBody = await readRawBody(req);
 
     // Verify Slack signature
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
@@ -42,21 +41,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       if (!isValid) {
         console.error("Signature verification failed for interactions");
-        // Log for debugging but don't block in production initially
-        // TODO: Enable strict verification once confirmed working
+        return res.status(401).json({ error: "Invalid signature" });
       }
     }
 
-    // Parse payload from form data
-    let payload;
-    if (typeof req.body === "string") {
-      const params = new URLSearchParams(req.body);
-      payload = JSON.parse(params.get("payload") || "{}");
-    } else if (req.body.payload) {
-      payload = JSON.parse(req.body.payload);
-    } else {
-      payload = req.body;
+    // Parse payload from raw body
+    const params = new URLSearchParams(rawBody);
+    const payloadStr = params.get("payload");
+
+    if (!payloadStr) {
+      return res.status(400).json({ error: "Missing payload" });
     }
+
+    const payload = JSON.parse(payloadStr);
 
     if (!payload || !payload.type) {
       return res.status(400).json({ error: "Invalid payload" });
@@ -108,8 +105,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: "1mb",
-    },
+    bodyParser: false,
   },
 };
