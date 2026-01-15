@@ -136,6 +136,16 @@ export function buildPollBlocks(poll: Poll): Block[] {
       });
     }
 
+    // Show "Ver votos" button only if not anonymous and has votes
+    if (!poll.settings.anonymousVoting && totalVotes > 0) {
+      actionElements.push({
+        type: "button",
+        text: text("👥 Ver votos", "plain_text"),
+        action_id: ACTION_IDS.showAllVotes,
+        value: poll.id,
+      });
+    }
+
     actionElements.push({
       type: "button",
       text: text("🔄 Actualizar", "plain_text"),
@@ -317,6 +327,65 @@ export function buildPollListBlocks(polls: Poll[]): Block[] {
   });
 
   return blocks;
+}
+
+/**
+ * Builds the modal to show all votes for a poll
+ */
+export function buildAllVotesModal(poll: Poll): object {
+  const blocks: Block[] = [];
+
+  poll.options.forEach((option, index) => {
+    const emoji = getOptionEmoji(index);
+    const voteCount = option.votes.length;
+
+    // Option header
+    blocks.push({
+      type: "section",
+      text: text(
+        `${emoji} *${escapeSlackText(option.text)}* — ${voteCount} voto${
+          voteCount !== 1 ? "s" : ""
+        }`
+      ),
+    });
+
+    // List all voters
+    if (voteCount > 0) {
+      const voterList = option.votes.map((v) => `• <@${v.userId}>`).join("\n");
+
+      blocks.push({
+        type: "context",
+        elements: [contextText(voterList)],
+      });
+    } else {
+      blocks.push({
+        type: "context",
+        elements: [contextText("_Sin votos_")],
+      });
+    }
+
+    blocks.push({ type: "divider" });
+  });
+
+  // Summary
+  const totalVotes = getTotalVotes(poll);
+  const uniqueVoters = getUniqueVoters(poll);
+
+  blocks.push({
+    type: "context",
+    elements: [
+      contextText(
+        `${EMOJIS.chart} *Total:* ${totalVotes} votos de ${uniqueVoters} participantes`
+      ),
+    ],
+  });
+
+  return {
+    type: "modal",
+    title: text("👥 Todos los votos", "plain_text"),
+    close: text("Cerrar", "plain_text"),
+    blocks,
+  };
 }
 
 // Helper functions

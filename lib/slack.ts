@@ -110,9 +110,46 @@ export async function handleInteraction(
         response: {
           response_type: "ephemeral",
           replace_original: false,
-          text: `📋 *Comando para recrear esta encuesta:*\n\`\`\`${command}\`\`\``,
+          text: `📋 *Comando para recrear esta encuesta:*\n\nCopia y pega este comando:\n\`\`\`${command}\`\`\`\n_💡 Selecciona el texto del comando y cópialo manualmente_`,
         },
       };
+    }
+
+    // Show all votes action - open modal
+    if (actionId === ACTION_IDS.showAllVotes) {
+      const poll = await getPollForModal(value);
+
+      if (!poll) {
+        return {
+          response: {
+            response_type: "ephemeral",
+            text: MESSAGES.errors.pollNotFound,
+          },
+        };
+      }
+
+      if (poll.settings.anonymousVoting) {
+        return {
+          response: {
+            response_type: "ephemeral",
+            text: "🕵️ Esta encuesta es anónima. No se pueden ver los votantes.",
+          },
+        };
+      }
+
+      // Open modal with all votes
+      const client = new WebClient(botToken);
+      const { buildAllVotesModal } = await import("./blocks");
+      try {
+        await client.views.open({
+          trigger_id,
+          view: buildAllVotesModal(poll) as any,
+        });
+      } catch (error) {
+        console.error("Error opening votes modal:", error);
+      }
+
+      return { response: { response_type: "ephemeral", text: "" } };
     }
 
     // Add option action - open modal
