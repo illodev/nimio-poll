@@ -3,6 +3,12 @@
   "buildCommand": "npm run vercel-build",
   "installCommand": "npm install",
   "framework": null,
+  "crons": [
+    {
+      "path": "/api/cron/expire-polls",
+      "schedule": "*/5 * * * *"
+    }
+  ],
   "functions": {
     "api/**/*.ts": {
       "memory": 256,

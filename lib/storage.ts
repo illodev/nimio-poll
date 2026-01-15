@@ -15,6 +15,7 @@ const redis =
 const POLL_PREFIX = "poll:";
 const TEAM_PREFIX = "team:";
 const CHANNEL_POLLS_PREFIX = "channel_polls:";
+const ACTIVE_POLLS_KEY = "active_polls_with_expiry";
 
 /**
  * Storage class for managing polls and installations
@@ -41,12 +42,15 @@ export class PollStorage {
     const channelKey = `${CHANNEL_POLLS_PREFIX}${poll.teamId}:${poll.channelId}`;
     await r.sadd(channelKey, poll.id);
 
-    // Set expiration if configured
-    if (poll.expiresAt) {
-      const ttl = Math.ceil((poll.expiresAt - Date.now()) / 1000);
-      if (ttl > 0) {
-        await r.expire(key, ttl);
-      }
+    // Track polls with expiration for cron job
+    if (poll.expiresAt && !poll.isClosed) {
+      await r.zadd(ACTIVE_POLLS_KEY, {
+        score: poll.expiresAt,
+        member: poll.id,
+      });
+    } else if (poll.isClosed) {
+      // Remove from active polls if closed
+      await r.zrem(ACTIVE_POLLS_KEY, poll.id);
     }
   }
 
@@ -150,6 +154,31 @@ export class PollStorage {
     const installation = await this.getInstallation(teamId);
     return installation !== null;
   }
+
+  /**
+   * Get all expired polls that are not yet closed
+   */
+  static async getExpiredPolls(): Promise<Poll[]> {
+    const r = this.getRedis();
+    const now = Date.now();
+
+    // Get all poll IDs with expiration time <= now using zrange with BYSCORE
+    const expiredIds = await r.zrange(ACTIVE_POLLS_KEY, 0, now, {
+      byScore: true,
+    });
+
+    if (!expiredIds || expiredIds.length === 0) return [];
+
+    const polls: Poll[] = [];
+    for (const pollId of expiredIds) {
+      const poll = await this.getPoll(pollId as string);
+      if (poll && !poll.isClosed) {
+        polls.push(poll);
+      }
+    }
+
+    return polls;
+  }
 }
 
 /**
@@ -215,6 +244,19 @@ export class InMemoryStorage {
 
   static async isTeamInstalled(teamId: string): Promise<boolean> {
     return this.installations.has(teamId);
+  }
+
+  static async getExpiredPolls(): Promise<Poll[]> {
+    const now = Date.now();
+    const polls: Poll[] = [];
+
+    for (const poll of this.polls.values()) {
+      if (poll.expiresAt && poll.expiresAt <= now && !poll.isClosed) {
+        polls.push(poll);
+      }
+    }
+
+    return polls;
   }
 }
 

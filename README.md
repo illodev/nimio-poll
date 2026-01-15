@@ -11,10 +11,11 @@
 - 📊 **Visualización en tiempo real** - Barras de progreso y porcentajes actualizados al instante
 - 🕵️ **Votación anónima** - Oculta la identidad de los votantes
 - ☑️ **Múltiples respuestas** - Permite votar por varias opciones
-- ⏰ **Expiración automática** - Cierra encuestas automáticamente
+- ⏰ **Expiración automática** - Cierra encuestas automáticamente con cron job
 - ➕ **Añadir opciones** - Los participantes pueden añadir nuevas opciones
 - 🔄 **Toggle de votos** - Haz clic de nuevo para quitar tu voto
 - 🏆 **Resultados destacados** - Muestra el ganador al cerrar
+- 💾 **Almacenamiento persistente** - Usa Upstash Redis para guardar las encuestas
 
 ## 🚀 Despliegue Rápido
 
@@ -88,14 +89,26 @@ vercel
 
 Configura estas variables en Vercel:
 
-| Variable                               | Descripción                            |
-| -------------------------------------- | -------------------------------------- |
-| `SLACK_CLIENT_ID`                      | Client ID de tu Slack App              |
-| `SLACK_CLIENT_SECRET`                  | Client Secret de tu Slack App          |
-| `SLACK_SIGNING_SECRET`                 | Signing Secret para verificar requests |
-| `SLACK_BOT_TOKEN`                      | Bot Token (para single workspace)      |
-| `UPSTASH_REDIS_REST_KV_REST_API_URL`   | URL de Upstash Redis                   |
-| `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Token de Upstash Redis                 |
+| Variable                               | Descripción                            | Requerida |
+| -------------------------------------- | -------------------------------------- | --------- |
+| `SLACK_CLIENT_ID`                      | Client ID de tu Slack App              | ✅        |
+| `SLACK_CLIENT_SECRET`                  | Client Secret de tu Slack App          | ✅        |
+| `SLACK_SIGNING_SECRET`                 | Signing Secret para verificar requests | ✅        |
+| `SLACK_BOT_TOKEN`                      | Bot Token (para single workspace)      | ✅        |
+| `SLACK_REDIRECT_URI`                   | URL de redirect OAuth (incluir https://) | ✅      |
+| `UPSTASH_REDIS_REST_KV_REST_API_URL`   | URL de Upstash Redis                   | ✅        |
+| `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Token de Upstash Redis                 | ✅        |
+| `CRON_SECRET`                          | Secret para proteger el cron job       | ⚠️ Recomendada |
+
+> **Nota:** El `SLACK_BOT_TOKEN` lo encuentras en tu Slack App > OAuth & Permissions > Bot User OAuth Token (empieza con `xoxb-`)
+
+### 5. Configurar Expiración Automática (Opcional)
+
+Si quieres que las encuestas con `--expires=N` se cierren automáticamente:
+
+1. Genera un secret aleatorio para `CRON_SECRET`
+2. Añádelo en Vercel > Settings > Environment Variables
+3. El cron job se ejecuta cada 5 minutos automáticamente
 
 ## 📖 Uso
 
@@ -145,6 +158,8 @@ Configura estas variables en Vercel:
 nimio-poll/
 ├── api/
 │   ├── index.ts              # Health check
+│   ├── cron/
+│   │   └── expire-polls.ts   # Cron job para cerrar encuestas expiradas
 │   └── slack/
 │       ├── command.ts        # /poll command handler
 │       ├── interactions.ts   # Button clicks, modals
@@ -156,10 +171,12 @@ nimio-poll/
 │   ├── types.ts              # TypeScript interfaces
 │   ├── constants.ts          # Emojis, limits, messages
 │   ├── utils.ts              # Helper functions
-│   ├── storage.ts            # Vercel KV storage
+│   ├── storage.ts            # Upstash Redis storage
 │   ├── blocks.ts             # Slack Block Kit builder
 │   ├── poll-service.ts       # Business logic
 │   └── slack.ts              # Slack API helpers
+├── public/
+│   └── index.html            # Landing page con "Add to Slack"
 ├── package.json
 ├── tsconfig.json
 └── vercel.json
@@ -226,12 +243,33 @@ Inicia el flujo OAuth para instalación multi-workspace.
 
 Callback de OAuth. Guarda tokens y muestra página de éxito.
 
+### GET /api/cron/expire-polls
+
+Cron job que cierra automáticamente las encuestas expiradas. Se ejecuta cada 5 minutos.
+Requiere header `Authorization: Bearer {CRON_SECRET}` para protección.
+
 ## 🔐 Seguridad
 
 - ✅ Verificación de firma de Slack en cada request
-- ✅ Tokens almacenados de forma segura en Vercel KV
+- ✅ Tokens almacenados de forma segura en Upstash Redis
 - ✅ No se exponen credenciales en el cliente
 - ✅ Validación de timestamps para prevenir replay attacks
+- ✅ Cron job protegido con secret
+
+## 🐛 Solución de Problemas
+
+### Error: "channel_not_found"
+El bot no tiene acceso al canal. Solución:
+```
+/invite @NimioPoll
+```
+
+### Error: "invalid_blocks"
+Problema con el formato de los bloques de Slack. Verifica que estés usando la última versión.
+
+### Las encuestas no expiran automáticamente
+1. Verifica que `CRON_SECRET` esté configurado en Vercel
+2. El cron job se ejecuta cada 5 minutos (puede haber un pequeño retraso)
 
 ## 📄 Licencia
 
