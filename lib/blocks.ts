@@ -293,6 +293,50 @@ export function buildAddOptionModal(pollId: string, question: string): object {
 }
 
 /**
+ * Builds modal to display command for copying
+ */
+export function buildCopyCommandModal(
+  command: string,
+  question: string
+): object {
+  return {
+    type: "modal",
+    title: text("📋 Copiar comando", "plain_text"),
+    close: text("Cerrar", "plain_text"),
+    blocks: [
+      {
+        type: "section",
+        text: text(`*Encuesta:* ${escapeSlackText(question)}`),
+      },
+      {
+        type: "divider",
+      },
+      {
+        type: "section",
+        text: text(
+          "Selecciona y copia el siguiente comando para recrear esta encuesta:"
+        ),
+      },
+      {
+        type: "input",
+        block_id: "command_display",
+        element: {
+          type: "plain_text_input",
+          action_id: "command_text",
+          initial_value: command,
+          multiline: true,
+        },
+        label: text("Comando", "plain_text"),
+        hint: text(
+          "💡 Selecciona todo el texto (Ctrl+A) y copia (Ctrl+C)",
+          "plain_text"
+        ),
+      },
+    ],
+  };
+}
+
+/**
  * Builds poll list message
  */
 export function buildPollListBlocks(polls: Poll[]): Block[] {

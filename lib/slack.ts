@@ -85,7 +85,7 @@ export async function handleInteraction(
       };
     }
 
-    // Copy command action
+    // Copy command action - open modal
     if (actionId === ACTION_IDS.copyCommand) {
       const poll = await getPollForModal(value);
 
@@ -106,13 +106,19 @@ export async function handleInteraction(
         poll.settings
       );
 
-      return {
-        response: {
-          response_type: "ephemeral",
-          replace_original: false,
-          text: `📋 *Comando para recrear esta encuesta:*\n\nCopia y pega este comando:\n\`\`\`${command}\`\`\`\n_💡 Selecciona el texto del comando y cópialo manualmente_`,
-        },
-      };
+      // Open modal with command
+      const client = new WebClient(botToken);
+      const { buildCopyCommandModal } = await import("./blocks");
+      try {
+        await client.views.open({
+          trigger_id,
+          view: buildCopyCommandModal(command, poll.question) as any,
+        });
+      } catch (error) {
+        console.error("Error opening copy command modal:", error);
+      }
+
+      return { response: { response_type: "ephemeral", text: "" } };
     }
 
     // Show all votes action - open modal
