@@ -23,7 +23,10 @@ function text(
   content: string,
   type: "plain_text" | "mrkdwn" = "mrkdwn"
 ): TextObject {
-  return { type, text: content, emoji: type === "plain_text" };
+  if (type === "plain_text") {
+    return { type, text: content, emoji: true };
+  }
+  return { type, text: content };
 }
 
 /**
