@@ -110,25 +110,26 @@ export async function createPoll(
     return { success: true };
   } catch (error: unknown) {
     console.error("Error posting poll:", error);
-    
+
     // Handle specific Slack API errors
     const slackError = error as { data?: { error?: string } };
     const errorCode = slackError?.data?.error;
-    
+
     if (errorCode === "channel_not_found" || errorCode === "not_in_channel") {
       return {
         success: false,
-        error: "❌ No puedo publicar en este canal. Por favor, invita al bot al canal escribiendo: /invite @NimioPoll",
+        error:
+          "❌ No puedo publicar en este canal. Por favor, invita al bot al canal escribiendo: /invite @NimioPoll",
       };
     }
-    
+
     if (errorCode === "is_archived") {
       return {
         success: false,
         error: "❌ Este canal está archivado.",
       };
     }
-    
+
     return {
       success: false,
       error: "Error al crear la encuesta. Verifica los permisos del bot.",
