@@ -85,6 +85,36 @@ export async function handleInteraction(
       };
     }
 
+    // Copy command action
+    if (actionId === ACTION_IDS.copyCommand) {
+      const poll = await getPollForModal(value);
+
+      if (!poll) {
+        return {
+          response: {
+            response_type: "ephemeral",
+            text: MESSAGES.errors.pollNotFound,
+          },
+        };
+      }
+
+      // Generate the command
+      const { generatePollCommand } = await import("./utils");
+      const command = generatePollCommand(
+        poll.question,
+        poll.options.map((o) => o.text),
+        poll.settings
+      );
+
+      return {
+        response: {
+          response_type: "ephemeral",
+          replace_original: false,
+          text: `📋 *Comando para recrear esta encuesta:*\n\`\`\`${command}\`\`\``,
+        },
+      };
+    }
+
     // Add option action - open modal
     if (actionId === ACTION_IDS.addOption) {
       const poll = await getPollForModal(value);

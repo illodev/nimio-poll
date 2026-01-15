@@ -48,6 +48,7 @@ export const ACTION_IDS = {
   toggleAnonymous: "nimio_toggle_anonymous",
   submitNewOption: "nimio_submit_new_option",
   cancelModal: "nimio_cancel_modal",
+  copyCommand: "nimio_copy_command",
 } as const;
 
 export const BLOCK_IDS = {

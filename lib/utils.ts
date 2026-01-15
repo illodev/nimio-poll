@@ -206,13 +206,18 @@ export function getTimeRemaining(expiresAt: number): string {
 
   if (diff <= 0) return "Expirada";
 
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+  const totalSeconds = Math.floor(diff / 1000);
+  const seconds = totalSeconds % 60;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const minutes = totalMinutes % 60;
+  const totalHours = Math.floor(totalMinutes / 60);
+  const hours = totalHours % 24;
+  const days = Math.floor(totalHours / 24);
 
-  if (days > 0) return `${days}d ${hours % 24}h restantes`;
-  if (hours > 0) return `${hours}h ${minutes % 60}m restantes`;
-  return `${minutes}m restantes`;
+  if (days > 0) return `${days}d ${hours}h ${minutes}m restantes`;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s restantes`;
+  if (minutes > 0) return `${minutes}m ${seconds}s restantes`;
+  return `${seconds}s restantes`;
 }
 
 /**
@@ -235,6 +240,40 @@ export function escapeSlackText(text: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+/**
+ * Generate the /poll command to recreate a poll
+ */
+export function generatePollCommand(
+  question: string,
+  options: string[],
+  settings: {
+    multipleChoice?: boolean;
+    anonymousVoting?: boolean;
+    showVoterNames?: boolean;
+    allowAddOptions?: boolean;
+    limitVotesPerUser?: number;
+    expirationMinutes?: number;
+  }
+): string {
+  let command = `/poll "${question}"`;
+
+  options.forEach((option) => {
+    command += ` "${option}"`;
+  });
+
+  if (settings.anonymousVoting) command += " --anonymous";
+  if (settings.multipleChoice) command += " --multi";
+  if (!settings.showVoterNames && !settings.anonymousVoting)
+    command += " --hide-voters";
+  if (settings.allowAddOptions) command += " --allow-add";
+  if (settings.limitVotesPerUser)
+    command += ` --limit=${settings.limitVotesPerUser}`;
+  if (settings.expirationMinutes)
+    command += ` --expires=${settings.expirationMinutes}`;
+
+  return command;
 }
 
 /**
