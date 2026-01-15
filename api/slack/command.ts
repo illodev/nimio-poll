@@ -96,10 +96,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Success - empty response (poll is posted directly to channel)
-    return res.status(200).json({
-      response_type: "ephemeral",
-      text: "",
-    });
+    // Return 200 with no body to acknowledge the command
+    return res.status(200).send("");
   } catch (error) {
     console.error("Command handler error:", error);
     return res.status(200).json({
