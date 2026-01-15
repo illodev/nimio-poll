@@ -102,13 +102,24 @@ Configura estas variables en Vercel:
 
 > **Nota:** El `SLACK_BOT_TOKEN` lo encuentras en tu Slack App > OAuth & Permissions > Bot User OAuth Token (empieza con `xoxb-`)
 
-### 5. Configurar Expiración Automática (Opcional)
+### 5. Expiración Automática
 
-Si quieres que las encuestas con `--expires=N` se cierren automáticamente:
+Las encuestas con `--expires=N` se cierran automáticamente de dos formas:
+
+**Forma 1: Al interactuar (siempre activo)**
+
+- Cuando alguien intenta votar en una encuesta expirada, se cierra automáticamente y se actualiza el mensaje.
+
+**Forma 2: Cron job (una vez al día)**
+
+- Un cron job revisa y cierra encuestas expiradas una vez al día.
+- **Nota:** En el plan Hobby de Vercel, los cron jobs solo se ejecutan una vez al día (no cada 5 minutos).
+- Para cron jobs más frecuentes, necesitas el plan Pro de Vercel.
+
+Para activar el cron job:
 
 1. Genera un secret aleatorio para `CRON_SECRET`
 2. Añádelo en Vercel > Settings > Environment Variables
-3. El cron job se ejecuta cada 5 minutos automáticamente
 
 ## 📖 Uso
 

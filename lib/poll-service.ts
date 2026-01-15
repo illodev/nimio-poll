@@ -157,10 +157,26 @@ export async function handleVote(
     return { success: false, message: MESSAGES.errors.pollClosed };
   }
 
-  // Check expiration
+  // Check expiration and close poll if expired
   if (poll.expiresAt && Date.now() > poll.expiresAt) {
     poll.isClosed = true;
     await Storage.savePoll(poll);
+
+    // Update the Slack message to show poll is closed
+    if (poll.messageTs && poll.channelId) {
+      try {
+        const client = new WebClient(botToken);
+        await client.chat.update({
+          channel: poll.channelId,
+          ts: poll.messageTs,
+          blocks: buildPollBlocks(poll),
+          text: `📊 Encuesta cerrada: ${poll.question}`,
+        });
+      } catch (error) {
+        console.error("Error updating expired poll message:", error);
+      }
+    }
+
     return { success: false, message: MESSAGES.errors.pollClosed };
   }
 
