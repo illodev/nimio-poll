@@ -109,13 +109,30 @@ export async function handleInteraction(
       // Open modal with command
       const client = new WebClient(botToken);
       const { buildCopyCommandModal } = await import("./blocks");
+
+      console.log("Opening copy command modal with trigger_id:", trigger_id);
+      console.log("Command to show:", command);
+
       try {
-        await client.views.open({
+        const modalView = buildCopyCommandModal(command, poll.question);
+        console.log("Modal view:", JSON.stringify(modalView, null, 2));
+
+        const result = await client.views.open({
           trigger_id,
-          view: buildCopyCommandModal(command, poll.question) as any,
+          view: modalView as any,
         });
-      } catch (error) {
+        console.log("Modal opened successfully:", result.ok);
+      } catch (error: any) {
         console.error("Error opening copy command modal:", error);
+        console.error("Error details:", error?.data || error?.message);
+        return {
+          response: {
+            response_type: "ephemeral",
+            text: `❌ Error abriendo modal: ${
+              error?.message || "Error desconocido"
+            }`,
+          },
+        };
       }
 
       return { response: { response_type: "ephemeral", text: "" } };
