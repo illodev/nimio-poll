@@ -12,410 +12,877 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      :root {
-        --primary: #667eea;
-        --secondary: #764ba2;
-        --dark: #1a1a2e;
-        --light: #f8f9fa;
-        --success: #48bb78;
-      }
-
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
 
+      :root {
+        --background: 0 0% 7%;
+        --foreground: 0 0% 98%;
+        --muted: 0 0% 15%;
+        --muted-foreground: 0 0% 65%;
+        --accent: 250 95% 76%;
+        --accent-dark: 250 80% 65%;
+        --border: 0 0% 20%;
+      }
+
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        background: var(--light);
-        color: var(--dark);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: hsl(var(--background));
+        color: hsl(var(--foreground));
         line-height: 1.6;
+        overflow-x: hidden;
       }
 
-      .gradient-bg {
-        background: linear-gradient(
-          135deg,
-          var(--primary) 0%,
-          var(--secondary) 100%
-        );
+      /* Animated gradient background */
+      .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        opacity: 0.4;
+        background: radial-gradient(
+            circle at 20% 50%,
+            hsl(250 95% 76% / 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 80%,
+            hsl(280 85% 70% / 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 90%,
+            hsl(200 90% 70% / 0.1) 0%,
+            transparent 50%
+          );
+        animation: moveGradient 20s ease infinite;
       }
 
+      @keyframes moveGradient {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-5%, -5%) scale(1.1);
+        }
+      }
+
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Header */
       header {
-        padding: 20px;
+        padding: 24px 0;
+        border-bottom: 1px solid hsl(var(--border));
+        backdrop-filter: blur(12px);
+        background: hsl(var(--background) / 0.8);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 24px;
+        font-weight: 700;
+        text-decoration: none;
+        color: hsl(var(--foreground));
+      }
+
+      .logo-icon {
+        font-size: 32px;
+      }
+
+      .header-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: hsl(var(--foreground));
+        color: hsl(var(--background));
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .header-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px hsl(var(--foreground) / 0.3);
+      }
+
+      /* Hero */
+      .hero {
+        padding: 120px 0 160px;
         text-align: center;
       }
 
-      .hero {
-        padding: 80px 20px;
-        text-align: center;
-        color: white;
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: hsl(var(--muted));
+        border: 1px solid hsl(var(--border));
+        border-radius: 100px;
+        font-size: 14px;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 24px;
+        animation: fadeInUp 0.8s ease;
       }
 
       .hero h1 {
-        font-size: 3.5rem;
-        margin-bottom: 20px;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        font-size: clamp(48px, 8vw, 80px);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        letter-spacing: -0.02em;
+        animation: fadeInUp 0.8s ease 0.1s backwards;
+      }
+
+      .gradient-text {
+        background: linear-gradient(
+          135deg,
+          hsl(var(--accent)) 0%,
+          hsl(280 85% 70%) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .hero p {
-        font-size: 1.4rem;
-        opacity: 0.95;
-        max-width: 600px;
-        margin: 0 auto 40px;
+        font-size: clamp(18px, 2vw, 24px);
+        color: hsl(var(--muted-foreground));
+        max-width: 700px;
+        margin: 0 auto 48px;
+        line-height: 1.6;
+        animation: fadeInUp 0.8s ease 0.2s backwards;
       }
 
-      .cta-button {
+      .cta-group {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease 0.3s backwards;
+      }
+
+      .cta-primary {
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        padding: 18px 36px;
-        background: white;
-        color: var(--primary);
+        padding: 16px 32px;
+        background: hsl(var(--accent));
+        color: hsl(var(--background));
         text-decoration: none;
-        border-radius: 50px;
-        font-size: 1.2rem;
+        border-radius: 12px;
+        font-size: 16px;
         font-weight: 600;
-        transition: transform 0.3s, box-shadow 0.3s;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        box-shadow: 0 0 40px hsl(var(--accent) / 0.3);
       }
 
-      .cta-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      .cta-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 48px hsl(var(--accent) / 0.5);
+        background: hsl(var(--accent-dark));
       }
 
-      .cta-button img {
-        height: 24px;
+      .cta-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 32px;
+        background: transparent;
+        color: hsl(var(--foreground));
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        border: 1px solid hsl(var(--border));
+        transition: all 0.3s ease;
       }
 
+      .cta-secondary:hover {
+        background: hsl(var(--muted));
+        border-color: hsl(var(--muted-foreground) / 0.3);
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Features */
       .features {
-        padding: 80px 20px;
-        max-width: 1200px;
-        margin: 0 auto;
+        padding: 80px 0 120px;
       }
 
-      .features h2 {
+      .section-header {
         text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 60px;
-        color: var(--dark);
+        margin-bottom: 80px;
+      }
+
+      .section-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        background: hsl(var(--muted));
+        border: 1px solid hsl(var(--border));
+        border-radius: 100px;
+        font-size: 14px;
+        font-weight: 600;
+        color: hsl(var(--accent));
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .section-header h2 {
+        font-size: clamp(36px, 5vw, 56px);
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+      }
+
+      .section-header p {
+        font-size: 20px;
+        color: hsl(var(--muted-foreground));
+        max-width: 600px;
+        margin: 0 auto;
       }
 
       .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
       }
 
       .feature-card {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s;
+        background: hsl(var(--muted) / 0.3);
+        border: 1px solid hsl(var(--border));
+        padding: 32px;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          hsl(var(--accent) / 0.3),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
       .feature-card:hover {
-        transform: translateY(-5px);
+        background: hsl(var(--muted) / 0.5);
+        border-color: hsl(var(--accent) / 0.3);
+        transform: translateY(-4px);
+      }
+
+      .feature-card:hover::before {
+        opacity: 1;
       }
 
       .feature-icon {
-        font-size: 3rem;
+        font-size: 40px;
         margin-bottom: 20px;
+        display: block;
       }
 
       .feature-card h3 {
-        font-size: 1.4rem;
+        font-size: 20px;
+        font-weight: 700;
         margin-bottom: 12px;
-        color: var(--dark);
       }
 
       .feature-card p {
-        color: #666;
+        color: hsl(var(--muted-foreground));
+        line-height: 1.6;
+        font-size: 15px;
       }
 
+      /* Demo Section */
       .demo {
-        padding: 80px 20px;
-        background: var(--dark);
-        color: white;
-      }
-
-      .demo h2 {
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 40px;
+        padding: 120px 0;
+        background: hsl(var(--muted) / 0.2);
+        border-top: 1px solid hsl(var(--border));
+        border-bottom: 1px solid hsl(var(--border));
       }
 
       .demo-content {
-        max-width: 800px;
-        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: center;
+      }
+
+      .demo-text h2 {
+        font-size: clamp(36px, 5vw, 48px);
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 24px;
+        letter-spacing: -0.02em;
+      }
+
+      .demo-text p {
+        font-size: 18px;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 32px;
+        line-height: 1.7;
       }
 
       .command-demo {
-        background: #2d2d44;
-        padding: 30px;
+        background: hsl(var(--background));
+        border: 1px solid hsl(var(--border));
+        padding: 24px;
         border-radius: 12px;
         font-family: "SF Mono", Monaco, "Courier New", monospace;
-        margin-bottom: 30px;
+        font-size: 14px;
+        margin-bottom: 24px;
+        box-shadow: 0 8px 32px hsl(0 0% 0% / 0.4);
       }
 
       .command-demo .prompt {
-        color: var(--success);
+        color: hsl(var(--accent));
+        font-weight: 600;
       }
 
       .command-demo .command {
-        color: #fff;
+        color: hsl(var(--foreground));
       }
 
       .poll-preview {
-        background: white;
+        background: hsl(var(--muted) / 0.5);
+        border: 1px solid hsl(var(--border));
         border-radius: 12px;
-        padding: 24px;
-        color: var(--dark);
+        padding: 28px;
+        backdrop-filter: blur(12px);
       }
 
       .poll-preview h4 {
-        font-size: 1.3rem;
-        margin-bottom: 16px;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 24px;
       }
 
       .poll-option {
         display: flex;
         align-items: center;
-        padding: 12px 0;
-        border-bottom: 1px solid #eee;
-      }
-
-      .poll-option:last-child {
-        border-bottom: none;
+        padding: 16px 0;
+        gap: 12px;
       }
 
       .poll-option .emoji {
-        font-size: 1.5rem;
-        margin-right: 12px;
+        font-size: 20px;
+        width: 32px;
+      }
+
+      .poll-option .label {
+        min-width: 100px;
+        font-size: 15px;
       }
 
       .poll-option .bar {
         flex: 1;
-        height: 24px;
-        background: #eee;
-        border-radius: 4px;
+        height: 32px;
+        background: hsl(var(--muted));
+        border-radius: 8px;
         overflow: hidden;
-        margin: 0 12px;
+        position: relative;
       }
 
       .poll-option .bar-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--primary), var(--secondary));
-        border-radius: 4px;
+        background: linear-gradient(
+          90deg,
+          hsl(var(--accent)),
+          hsl(280 85% 70%)
+        );
+        border-radius: 8px;
+        transition: width 1s ease;
+        box-shadow: 0 0 20px hsl(var(--accent) / 0.4);
       }
 
       .poll-option .percentage {
-        font-weight: 600;
-        min-width: 50px;
+        font-weight: 700;
+        min-width: 60px;
         text-align: right;
+        font-size: 15px;
       }
 
-      .pricing {
-        padding: 80px 20px;
+      /* Stats */
+      .stats {
+        padding: 80px 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 48px;
         text-align: center;
       }
 
-      .pricing h2 {
-        font-size: 2.5rem;
-        margin-bottom: 20px;
+      .stat-item h3 {
+        font-size: clamp(40px, 5vw, 64px);
+        font-weight: 800;
+        margin-bottom: 8px;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--accent)) 0%,
+          hsl(280 85% 70%) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
-      .pricing p {
-        font-size: 1.3rem;
-        color: #666;
-        margin-bottom: 40px;
+      .stat-item p {
+        font-size: 16px;
+        color: hsl(var(--muted-foreground));
+      }
+
+      /* Pricing */
+      .pricing {
+        padding: 120px 0;
+        text-align: center;
       }
 
       .price-card {
-        display: inline-block;
-        background: white;
-        padding: 50px 60px;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+        background: hsl(var(--muted) / 0.3);
+        border: 1px solid hsl(var(--border));
+        padding: 64px 48px;
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .price-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          hsl(var(--accent)),
+          transparent
+        );
       }
 
       .price {
-        font-size: 4rem;
-        font-weight: 700;
-        color: var(--primary);
+        font-size: clamp(56px, 8vw, 80px);
+        font-weight: 800;
+        margin-bottom: 16px;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--accent)) 0%,
+          hsl(280 85% 70%) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
       }
 
-      .price span {
-        font-size: 1.5rem;
-        color: #999;
+      .price-subtitle {
+        font-size: 24px;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 32px;
       }
 
+      .price-features {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 32px;
+      }
+
+      .price-feature {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: hsl(var(--muted-foreground));
+        font-size: 15px;
+      }
+
+      /* Footer */
       footer {
-        padding: 40px 20px;
-        text-align: center;
-        color: #666;
+        padding: 80px 0 40px;
+        border-top: 1px solid hsl(var(--border));
       }
 
-      footer a {
-        color: var(--primary);
+      .footer-content {
+        text-align: center;
+      }
+
+      .footer-text {
+        font-size: 16px;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 24px;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: hsl(var(--foreground));
         text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: hsl(var(--accent));
       }
 
       @media (max-width: 768px) {
-        .hero h1 {
-          font-size: 2.5rem;
+        .hero {
+          padding: 80px 0 100px;
         }
 
-        .hero p {
-          font-size: 1.1rem;
+        .demo-content {
+          grid-template-columns: 1fr;
+          gap: 32px;
         }
 
-        .features h2,
-        .demo h2,
-        .pricing h2 {
-          font-size: 2rem;
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 32px;
+        }
+
+        .cta-group {
+          flex-direction: column;
+        }
+
+        .price-features {
+          flex-direction: column;
+          align-items: center;
         }
       }
     </style>
   </head>
   <body>
-    <div class="gradient-bg">
-      <header>
-        <span style="font-size: 2rem">🗳️</span>
-      </header>
+    <div class="animated-bg"></div>
 
-      <section class="hero">
-        <h1>Nimio Poll</h1>
+    <header>
+      <div class="container">
+        <div class="header-content">
+          <a href="/" class="logo">
+            <span class="logo-icon">🗳️</span>
+            <span>Nimio Poll</span>
+          </a>
+          <a href="/api/slack/oauth" class="header-cta">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"
+                fill="currentColor"
+              />
+            </svg>
+            Instalar
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span>✨</span>
+          <span>Gratis para siempre • Sin límites</span>
+        </div>
+        <h1>
+          Encuestas <span class="gradient-text">modernas</span><br />
+          para equipos en Slack
+        </h1>
         <p>
-          Encuestas modernas, elegantes y potentes para Slack. Más allá de
-          Simple Poll.
+          Más allá de Simple Poll. Votación en tiempo real, anonimato opcional,
+          múltiples opciones, expiración automática y todo lo que necesitas para
+          tomar mejores decisiones en equipo.
         </p>
-        <a href="/api/slack/oauth" class="cta-button">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"
-              fill="#667eea"
-            />
-          </svg>
-          Añadir a Slack
-        </a>
-      </section>
-    </div>
+        <div class="cta-group">
+          <a href="/api/slack/oauth" class="cta-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"
+                fill="currentColor"
+              />
+            </svg>
+            Añadir a Slack
+          </a>
+          <a href="https://github.com/illodev/nimio-poll" class="cta-secondary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+              />
+            </svg>
+            Ver código
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h3>100%</h3>
+            <p>Gratis para siempre</p>
+          </div>
+          <div class="stat-item">
+            <h3>∞</h3>
+            <p>Encuestas ilimitadas</p>
+          </div>
+          <div class="stat-item">
+            <h3>6+</h3>
+            <p>Funciones avanzadas</p>
+          </div>
+          <div class="stat-item">
+            <h3><10s</h3>
+            <p>Instalación rápida</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="features">
-      <h2>✨ Características</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>Tiempo Real</h3>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Características</span>
+          <h2>Todo lo que necesitas<br />y más</h2>
           <p>
-            Visualiza los votos al instante con barras de progreso y porcentajes
-            actualizados automáticamente.
+            Funciones potentes que hacen que tus encuestas sean más útiles,
+            flexibles e interactivas.
           </p>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🕵️</div>
-          <h3>Votación Anónima</h3>
-          <p>
-            Activa el modo anónimo para que nadie sepa quién votó qué. Perfecto
-            para temas sensibles.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">☑️</div>
-          <h3>Múltiples Votos</h3>
-          <p>
-            Permite que los usuarios voten por varias opciones, con límite
-            configurable.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⏰</div>
-          <h3>Expiración</h3>
-          <p>
-            Configura un tiempo límite y la encuesta se cerrará automáticamente.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">➕</div>
-          <h3>Opciones Dinámicas</h3>
-          <p>
-            Permite que los participantes añadan nuevas opciones sobre la
-            marcha.
-          </p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔄</div>
-          <h3>Toggle de Votos</h3>
-          <p>
-            Cambia tu voto en cualquier momento. Haz clic de nuevo para
-            quitarlo.
-          </p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Tiempo Real</h3>
+            <p>
+              Visualiza los votos al instante con barras de progreso y
+              porcentajes actualizados automáticamente mientras tu equipo vota.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🕵️</span>
+            <h3>Votación Anónima</h3>
+            <p>
+              Activa el modo anónimo para que nadie sepa quién votó qué.
+              Perfecto para temas sensibles o feedback honesto.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">☑️</span>
+            <h3>Múltiples Votos</h3>
+            <p>
+              Permite que los usuarios voten por varias opciones con límite
+              configurable. Ideal para seleccionar favoritos.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">⏰</span>
+            <h3>Expiración</h3>
+            <p>
+              Configura un tiempo límite y la encuesta se cerrará
+              automáticamente. Mantén las decisiones ágiles.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">➕</span>
+            <h3>Opciones Dinámicas</h3>
+            <p>
+              Permite que los participantes añadan nuevas opciones sobre la
+              marcha. Colaboración real sin limitaciones.
+            </p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-icon">🔄</span>
+            <h3>Toggle de Votos</h3>
+            <p>
+              Cambia tu voto en cualquier momento. Haz clic de nuevo para
+              quitarlo. Flexibilidad total.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="demo">
-      <h2>📝 Así de Fácil</h2>
-      <div class="demo-content">
-        <div class="command-demo">
-          <span class="prompt">/poll</span>
-          <span class="command">
-            "¿Dónde almorzamos?" "Pizza 🍕" "Sushi 🍣" "Tacos 🌮"</span
-          >
-        </div>
+      <div class="container">
+        <div class="demo-content">
+          <div class="demo-text">
+            <span class="section-badge">Demo</span>
+            <h2>Crear una encuesta es simple</h2>
+            <p>
+              Escribe un comando, añade tu pregunta y opciones. Nimio Poll se
+              encarga del resto con una interfaz moderna y resultados en tiempo
+              real.
+            </p>
+          </div>
+          <div>
+            <div class="command-demo">
+              <span class="prompt">/poll</span>
+              <span class="command">
+                "¿Dónde almorzamos?" "Pizza 🍕" "Sushi 🍣" "Tacos 🌮"</span
+              >
+            </div>
 
-        <div class="poll-preview">
-          <h4>📊 ¿Dónde almorzamos?</h4>
-          <div class="poll-option">
-            <span class="emoji">1️⃣</span>
-            <span>Pizza 🍕</span>
-            <div class="bar">
-              <div class="bar-fill" style="width: 60%"></div>
+            <div class="poll-preview">
+              <h4>📊 ¿Dónde almorzamos?</h4>
+              <div class="poll-option">
+                <span class="emoji">1️⃣</span>
+                <span class="label">Pizza 🍕</span>
+                <div class="bar">
+                  <div class="bar-fill" style="width: 60%"></div>
+                </div>
+                <span class="percentage">60%</span>
+              </div>
+              <div class="poll-option">
+                <span class="emoji">2️⃣</span>
+                <span class="label">Sushi 🍣</span>
+                <div class="bar">
+                  <div class="bar-fill" style="width: 25%"></div>
+                </div>
+                <span class="percentage">25%</span>
+              </div>
+              <div class="poll-option">
+                <span class="emoji">3️⃣</span>
+                <span class="label">Tacos 🌮</span>
+                <div class="bar">
+                  <div class="bar-fill" style="width: 15%"></div>
+                </div>
+                <span class="percentage">15%</span>
+              </div>
             </div>
-            <span class="percentage">60%</span>
-          </div>
-          <div class="poll-option">
-            <span class="emoji">2️⃣</span>
-            <span>Sushi 🍣</span>
-            <div class="bar">
-              <div class="bar-fill" style="width: 25%"></div>
-            </div>
-            <span class="percentage">25%</span>
-          </div>
-          <div class="poll-option">
-            <span class="emoji">3️⃣</span>
-            <span>Tacos 🌮</span>
-            <div class="bar">
-              <div class="bar-fill" style="width: 15%"></div>
-            </div>
-            <span class="percentage">15%</span>
           </div>
         </div>
       </div>
     </section>
 
     <section class="pricing">
-      <h2>💰 Precio</h2>
-      <p>Sin trucos, sin límites ocultos</p>
-      <div class="price-card">
-        <div class="price">Gratis <span>para siempre</span></div>
-        <p style="color: #666; margin-top: 20px">
-          Encuestas ilimitadas • Votos ilimitados • Todas las funciones
-        </p>
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge">Precio</span>
+          <h2>Simple y transparente</h2>
+          <p>Sin trucos, sin límites ocultos, sin sorpresas</p>
+        </div>
+        <div class="price-card">
+          <div class="price">Gratis</div>
+          <div class="price-subtitle">para siempre</div>
+          <div class="price-features">
+            <div class="price-feature">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Encuestas ilimitadas
+            </div>
+            <div class="price-feature">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Votos ilimitados
+            </div>
+            <div class="price-feature">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              >
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Todas las funciones
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <footer>
-      <p>Hecho con ❤️ para equipos que quieren mejores encuestas</p>
-      <p style="margin-top: 10px">
-        <a href="https://github.com/your-repo/nimio-poll">GitHub</a> •
-        <a href="/api/slack/oauth">Instalar</a>
-      </p>
+      <div class="container">
+        <div class="footer-content">
+          <p class="footer-text">
+            Hecho con ❤️ para equipos que quieren mejores encuestas
+          </p>
+          <div class="footer-links">
+            <a href="https://github.com/illodev/nimio-poll">GitHub</a>
+            <a href="/api/slack/oauth">Instalar</a>
+          </div>
+        </div>
+      </div>
     </footer>
   </body>
 </html>
