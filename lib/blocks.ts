@@ -145,14 +145,14 @@ export function buildPollBlocks(poll: Poll): Block[] {
 
     actionElements.push({
       type: "button",
-      text: text("� Copiar comando", "plain_text"),
+      text: text("📋 Copiar comando", "plain_text"),
       action_id: ACTION_IDS.copyCommand,
       value: poll.id,
     });
 
     actionElements.push({
       type: "button",
-      text: text("�🔒 Cerrar", "plain_text"),
+      text: text("🔒 Cerrar", "plain_text"),
       action_id: ACTION_IDS.closePoll,
       value: poll.id,
       style: "danger",
