@@ -184,6 +184,20 @@ export function buildPollBlocks(poll: Poll): Block[] {
         ),
       });
     }
+
+    // Add copy command button for closed polls
+    blocks.push({
+      type: "actions",
+      block_id: BLOCK_IDS.actions,
+      elements: [
+        {
+          type: "button",
+          text: text("📋 Copiar comando", "plain_text"),
+          action_id: ACTION_IDS.copyCommand,
+          value: poll.id,
+        },
+      ],
+    });
   }
 
   return blocks;
