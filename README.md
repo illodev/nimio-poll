@@ -89,16 +89,16 @@ vercel
 
 Configura estas variables en Vercel:
 
-| Variable                               | Descripción                            | Requerida |
-| -------------------------------------- | -------------------------------------- | --------- |
-| `SLACK_CLIENT_ID`                      | Client ID de tu Slack App              | ✅        |
-| `SLACK_CLIENT_SECRET`                  | Client Secret de tu Slack App          | ✅        |
-| `SLACK_SIGNING_SECRET`                 | Signing Secret para verificar requests | ✅        |
-| `SLACK_BOT_TOKEN`                      | Bot Token (para single workspace)      | ✅        |
-| `SLACK_REDIRECT_URI`                   | URL de redirect OAuth (incluir https://) | ✅      |
-| `UPSTASH_REDIS_REST_KV_REST_API_URL`   | URL de Upstash Redis                   | ✅        |
-| `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Token de Upstash Redis                 | ✅        |
-| `CRON_SECRET`                          | Secret para proteger el cron job       | ⚠️ Recomendada |
+| Variable                               | Descripción                              | Requerida      |
+| -------------------------------------- | ---------------------------------------- | -------------- |
+| `SLACK_CLIENT_ID`                      | Client ID de tu Slack App                | ✅             |
+| `SLACK_CLIENT_SECRET`                  | Client Secret de tu Slack App            | ✅             |
+| `SLACK_SIGNING_SECRET`                 | Signing Secret para verificar requests   | ✅             |
+| `SLACK_BOT_TOKEN`                      | Bot Token (para single workspace)        | ✅             |
+| `SLACK_REDIRECT_URI`                   | URL de redirect OAuth (incluir https://) | ✅             |
+| `UPSTASH_REDIS_REST_KV_REST_API_URL`   | URL de Upstash Redis                     | ✅             |
+| `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Token de Upstash Redis                   | ✅             |
+| `CRON_SECRET`                          | Secret para proteger el cron job         | ⚠️ Recomendada |
 
 > **Nota:** El `SLACK_BOT_TOKEN` lo encuentras en tu Slack App > OAuth & Permissions > Bot User OAuth Token (empieza con `xoxb-`)
 
@@ -259,15 +259,19 @@ Requiere header `Authorization: Bearer {CRON_SECRET}` para protección.
 ## 🐛 Solución de Problemas
 
 ### Error: "channel_not_found"
+
 El bot no tiene acceso al canal. Solución:
+
 ```
 /invite @NimioPoll
 ```
 
 ### Error: "invalid_blocks"
+
 Problema con el formato de los bloques de Slack. Verifica que estés usando la última versión.
 
 ### Las encuestas no expiran automáticamente
+
 1. Verifica que `CRON_SECRET` esté configurado en Vercel
 2. El cron job se ejecuta cada 5 minutos (puede haber un pequeño retraso)
 
