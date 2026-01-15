@@ -13,6 +13,6 @@ export default function handler(_req: VercelRequest, res: VercelResponse) {
       oauth: "/api/slack/oauth",
       oauth_redirect: "/api/slack/oauth/redirect",
     },
-    documentation: "https://github.com/your-repo/nimio-poll",
+    documentation: "https://github.com/illodev/nimio-poll",
   });
 }
