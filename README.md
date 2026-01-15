@@ -235,7 +235,7 @@ Callback de OAuth. Guarda tokens y muestra página de éxito.
 
 ## 📄 Licencia
 
-MIT © 2024
+MIT License
 
 ---
 
