@@ -110,18 +110,13 @@ export async function handleInteraction(
       const client = new WebClient(botToken);
       const { buildCopyCommandModal } = await import("./blocks");
 
-      console.log("Opening copy command modal with trigger_id:", trigger_id);
-      console.log("Command to show:", command);
-
       try {
         const modalView = buildCopyCommandModal(command, poll.question);
-        console.log("Modal view:", JSON.stringify(modalView, null, 2));
 
-        const result = await client.views.open({
+        await client.views.open({
           trigger_id,
           view: modalView as any,
         });
-        console.log("Modal opened successfully:", result.ok);
       } catch (error: any) {
         console.error("Error opening copy command modal:", error);
         console.error("Error details:", error?.data || error?.message);
