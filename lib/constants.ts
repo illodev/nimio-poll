@@ -30,7 +30,7 @@ export const COLORS = {
 } as const;
 
 export const LIMITS = {
-  maxOptions: 10,
+  maxOptions: 100,
   maxQuestionLength: 300,
   maxOptionLength: 150,
   maxPollsPerChannel: 50,
