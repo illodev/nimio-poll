@@ -49,13 +49,13 @@
 
 ### 2. Desplegar en Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-repo/nimio-poll)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/illodev/nimio-poll)
 
 O manualmente:
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/your-repo/nimio-poll
+git clone https://github.com/illodev/nimio-poll
 cd nimio-poll
 
 # Instalar dependencias
