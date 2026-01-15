@@ -236,6 +236,11 @@ export async function handleInteraction(
 
       return { response: { response_action: "clear" } };
     }
+
+    // Handle copy command modal submission (just close it)
+    if (callbackId === "copy_command_modal") {
+      return { response: { response_action: "clear" } };
+    }
   }
 
   return { response: {} };

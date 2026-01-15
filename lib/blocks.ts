@@ -301,7 +301,9 @@ export function buildCopyCommandModal(
 ): object {
   return {
     type: "modal",
+    callback_id: "copy_command_modal",
     title: text("📋 Copiar comando", "plain_text"),
+    submit: text("✅ Listo", "plain_text"),
     close: text("Cerrar", "plain_text"),
     blocks: [
       {
@@ -328,7 +330,7 @@ export function buildCopyCommandModal(
         },
         label: text("Comando", "plain_text"),
         hint: text(
-          "💡 Selecciona todo el texto (Ctrl+A) y copia (Ctrl+C)",
+          "💡 Selecciona todo el texto (Ctrl+A / Cmd+A) y copia (Ctrl+C / Cmd+C)",
           "plain_text"
         ),
       },
