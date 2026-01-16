@@ -122,9 +122,9 @@ export const COLORS = {
 
 export const LIMITS = {
   maxOptions: 100,
-  maxQuestionLength: 300,
-  maxOptionLength: 150,
-  maxPollsPerChannel: 50,
+  maxQuestionLength: 2000,
+  maxOptionLength: 2000,
+  maxPollsPerChannel: 20000,
   defaultExpirationHours: 24,
   maxExpirationHours: 168, // 1 week
 } as const;
