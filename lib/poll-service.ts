@@ -19,7 +19,16 @@ export async function createPoll(
   payload: SlackCommandPayload,
   botToken: string
 ): Promise<{ success: boolean; message?: string; error?: string }> {
+  // Debug logging
+  console.log("Raw command text:", JSON.stringify(payload.text));
+  console.log(
+    "Text char codes:",
+    [...payload.text].map((c) => c.charCodeAt(0))
+  );
+
   const parsed = parsePollCommand(payload.text);
+
+  console.log("Parsed result:", JSON.stringify(parsed));
 
   // Check for help command
   if (!payload.text || payload.text.trim().toLowerCase() === "help") {
