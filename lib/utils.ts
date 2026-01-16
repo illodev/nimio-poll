@@ -67,11 +67,16 @@ export function parsePollCommand(text: string): ParsedPollCommand {
     return result;
   }
 
+  // Normalize curly/smart quotes to straight quotes
+  const normalizedText = text
+    .replace(/[""„‟❝❞⹂〝〞＂]/g, '"') // Various double quote styles
+    .replace(/[''‚‛❛❜]/g, "'"); // Various single quote styles
+
   // Extract flags first
   const flagRegex =
     /--(anonymous|multi|hide-voters|allow-add|limit=\d+|expires=\d+)|-([amh])/g;
   let match;
-  const cleanText = text
+  const cleanText = normalizedText
     .replace(flagRegex, (matched) => {
       // Process flags
       if (matched === "--anonymous" || matched === "-a") {
@@ -93,7 +98,8 @@ export function parsePollCommand(text: string): ParsedPollCommand {
     .trim();
 
   // Parse quoted strings for question and options
-  const quotedRegex = /"([^"]+)"/g;
+  // This regex handles emojis and special characters inside quotes
+  const quotedRegex = /"([^"]+)"/gu;
   const matches: string[] = [];
 
   while ((match = quotedRegex.exec(cleanText)) !== null) {
