@@ -8,14 +8,11 @@
       name="description"
       content="Crea encuestas modernas y elegantes en Slack. Votación en tiempo real, anonimato, múltiples opciones y más."
     />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>"
-    />
+    <link rel="icon" href="./NimioPollLogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -26,58 +23,40 @@
       }
 
       :root {
-        --background: 0 0% 7%;
-        --foreground: 0 0% 98%;
-        --muted: 0 0% 15%;
-        --muted-foreground: 0 0% 65%;
-        --accent: 250 95% 76%;
-        --accent-dark: 250 80% 65%;
-        --border: 0 0% 20%;
+        --bg-primary: #000000;
+        --bg-secondary: #0a0a0a;
+        --bg-card: rgba(255, 255, 255, 0.03);
+        --text-primary: #ffffff;
+        --text-secondary: rgba(255, 255, 255, 0.6);
+        --border: rgba(255, 255, 255, 0.08);
+        --gradient-1: #ff6b9d;
+        --gradient-2: #c44eff;
+        --gradient-3: #4e8cff;
+        --gradient-4: #00d9a6;
+        --gradient-5: #ffcc00;
       }
 
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, sans-serif;
-        background: hsl(var(--background));
-        color: hsl(var(--foreground));
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
         line-height: 1.6;
         overflow-x: hidden;
       }
 
-      /* Animated gradient background */
-      .animated-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 0;
-        opacity: 0.4;
-        background: radial-gradient(
-            circle at 20% 50%,
-            hsl(250 95% 76% / 0.15) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 80% 80%,
-            hsl(280 85% 70% / 0.15) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 40% 90%,
-            hsl(200 90% 70% / 0.1) 0%,
-            transparent 50%
-          );
-        animation: moveGradient 20s ease infinite;
-      }
-
-      @keyframes moveGradient {
+      @keyframes float {
         0%,
         100% {
           transform: translate(0, 0) scale(1);
         }
+        25% {
+          transform: translate(50px, -30px) scale(1.05);
+        }
         50% {
-          transform: translate(-5%, -5%) scale(1.1);
+          transform: translate(-30px, 50px) scale(0.95);
+        }
+        75% {
+          transform: translate(-50px, -20px) scale(1.02);
         }
       }
 
@@ -91,13 +70,13 @@
 
       /* Header */
       header {
-        padding: 24px 0;
-        border-bottom: 1px solid hsl(var(--border));
-        backdrop-filter: blur(12px);
-        background: hsl(var(--background) / 0.8);
+        padding: 20px 0;
         position: sticky;
         top: 0;
         z-index: 100;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
       }
 
       .header-content {
@@ -110,69 +89,112 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        font-size: 24px;
-        font-weight: 700;
         text-decoration: none;
-        color: hsl(var(--foreground));
+        color: var(--text-primary);
       }
 
       .logo-icon {
-        font-size: 32px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+      }
+
+      .logo-text {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
       }
 
       .header-cta {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 10px 20px;
-        background: hsl(var(--foreground));
-        color: hsl(var(--background));
+        padding: 12px 24px;
+        background: var(--text-primary);
+        color: var(--bg-primary);
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: 100px;
         font-size: 14px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .header-cta:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 24px hsl(var(--foreground) / 0.3);
+        transform: scale(1.05);
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
       }
 
       /* Hero */
       .hero {
-        padding: 120px 0 160px;
+        padding: 50px 0 180px;
         text-align: center;
+        position: relative;
+      }
+
+      .hero-logo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 40px;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 20px rgba(196, 78, 255, 0.4));
+        }
+        50% {
+          transform: scale(1.05);
+          filter: drop-shadow(0 0 40px rgba(196, 78, 255, 0.6));
+        }
       }
 
       .hero-badge {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        background: hsl(var(--muted));
-        border: 1px solid hsl(var(--border));
+        gap: 10px;
+        padding: 10px 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
         border-radius: 100px;
         font-size: 14px;
-        color: hsl(var(--muted-foreground));
-        margin-bottom: 24px;
-        animation: fadeInUp 0.8s ease;
+        color: var(--text-secondary);
+        margin-bottom: 32px;
+        backdrop-filter: blur(10px);
+      }
+
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--gradient-4);
+        border-radius: 50%;
+        animation: blink 2s ease-in-out infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
       }
 
       .hero h1 {
-        font-size: clamp(48px, 8vw, 80px);
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 24px;
-        letter-spacing: -0.02em;
-        animation: fadeInUp 0.8s ease 0.1s backwards;
+        font-size: clamp(52px, 10vw, 96px);
+        font-weight: 900;
+        line-height: 1.05;
+        margin-bottom: 28px;
+        letter-spacing: -0.04em;
       }
 
       .gradient-text {
         background: linear-gradient(
           135deg,
-          hsl(var(--accent)) 0%,
-          hsl(280 85% 70%) 100%
+          var(--gradient-3) 0%,
+          var(--gradient-2) 50%,
+          var(--gradient-1) 100%
         );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -180,77 +202,104 @@
       }
 
       .hero p {
-        font-size: clamp(18px, 2vw, 24px);
-        color: hsl(var(--muted-foreground));
-        max-width: 700px;
-        margin: 0 auto 48px;
-        line-height: 1.6;
-        animation: fadeInUp 0.8s ease 0.2s backwards;
+        font-size: clamp(18px, 2.5vw, 22px);
+        color: var(--text-secondary);
+        max-width: 650px;
+        margin: 0 auto 56px;
+        line-height: 1.7;
       }
 
       .cta-group {
         display: flex;
-        gap: 16px;
+        gap: 20px;
         justify-content: center;
         flex-wrap: wrap;
-        animation: fadeInUp 0.8s ease 0.3s backwards;
       }
 
       .cta-primary {
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        padding: 16px 32px;
-        background: hsl(var(--accent));
-        color: hsl(var(--background));
+        padding: 18px 36px;
+        background: linear-gradient(
+          135deg,
+          var(--gradient-2),
+          var(--gradient-3)
+        );
+        color: white;
         text-decoration: none;
-        border-radius: 12px;
+        border-radius: 100px;
         font-size: 16px;
         font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 40px hsl(var(--accent) / 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 30px rgba(196, 78, 255, 0.4);
       }
 
       .cta-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 48px hsl(var(--accent) / 0.5);
-        background: hsl(var(--accent-dark));
+        transform: translateY(-3px);
+        box-shadow: 0 8px 50px rgba(196, 78, 255, 0.6);
       }
 
       .cta-secondary {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 16px 32px;
+        gap: 10px;
+        padding: 18px 36px;
         background: transparent;
-        color: hsl(var(--foreground));
+        color: var(--text-primary);
         text-decoration: none;
-        border-radius: 12px;
+        border-radius: 100px;
         font-size: 16px;
         font-weight: 600;
-        border: 1px solid hsl(var(--border));
+        border: 1px solid var(--border);
         transition: all 0.3s ease;
       }
 
       .cta-secondary:hover {
-        background: hsl(var(--muted));
-        border-color: hsl(var(--muted-foreground) / 0.3);
+        background: var(--bg-card);
+        border-color: rgba(255, 255, 255, 0.2);
       }
 
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      /* Stats */
+      .stats {
+        padding: 80px 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-card);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        text-align: center;
+      }
+
+      .stat-item h3 {
+        font-size: clamp(42px, 6vw, 72px);
+        font-weight: 900;
+        margin-bottom: 8px;
+        background: linear-gradient(
+          135deg,
+          var(--gradient-4) 0%,
+          var(--gradient-3) 50%,
+          var(--gradient-2) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.03em;
+      }
+
+      .stat-item p {
+        font-size: 15px;
+        color: var(--text-secondary);
+        font-weight: 500;
       }
 
       /* Features */
       .features {
-        padding: 80px 0 120px;
+        padding: 140px 0;
       }
 
       .section-header {
@@ -260,45 +309,49 @@
 
       .section-badge {
         display: inline-block;
-        padding: 6px 12px;
-        background: hsl(var(--muted));
-        border: 1px solid hsl(var(--border));
+        padding: 8px 16px;
+        background: linear-gradient(
+          135deg,
+          rgba(196, 78, 255, 0.1),
+          rgba(78, 140, 255, 0.1)
+        );
+        border: 1px solid rgba(196, 78, 255, 0.2);
         border-radius: 100px;
-        font-size: 14px;
-        font-weight: 600;
-        color: hsl(var(--accent));
-        margin-bottom: 16px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gradient-2);
+        margin-bottom: 20px;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.1em;
       }
 
       .section-header h2 {
-        font-size: clamp(36px, 5vw, 56px);
-        font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 16px;
-        letter-spacing: -0.02em;
+        font-size: clamp(40px, 6vw, 64px);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        letter-spacing: -0.03em;
       }
 
       .section-header p {
         font-size: 20px;
-        color: hsl(var(--muted-foreground));
-        max-width: 600px;
+        color: var(--text-secondary);
+        max-width: 550px;
         margin: 0 auto;
       }
 
       .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 24px;
       }
 
       .feature-card {
-        background: hsl(var(--muted) / 0.3);
-        border: 1px solid hsl(var(--border));
-        padding: 32px;
-        border-radius: 16px;
-        transition: all 0.3s ease;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 40px 32px;
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
       }
@@ -313,17 +366,17 @@
         background: linear-gradient(
           90deg,
           transparent,
-          hsl(var(--accent) / 0.3),
+          var(--gradient-2),
           transparent
         );
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.4s ease;
       }
 
       .feature-card:hover {
-        background: hsl(var(--muted) / 0.5);
-        border-color: hsl(var(--accent) / 0.3);
-        transform: translateY(-4px);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(196, 78, 255, 0.3);
+        transform: translateY(-8px);
       }
 
       .feature-card:hover::before {
@@ -331,109 +384,130 @@
       }
 
       .feature-icon {
-        font-size: 40px;
-        margin-bottom: 20px;
-        display: block;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          rgba(196, 78, 255, 0.15),
+          rgba(78, 140, 255, 0.15)
+        );
+        border-radius: 16px;
+        font-size: 28px;
+        margin-bottom: 24px;
       }
 
       .feature-card h3 {
         font-size: 20px;
         font-weight: 700;
         margin-bottom: 12px;
+        letter-spacing: -0.01em;
       }
 
       .feature-card p {
-        color: hsl(var(--muted-foreground));
-        line-height: 1.6;
+        color: var(--text-secondary);
+        line-height: 1.7;
         font-size: 15px;
       }
 
       /* Demo Section */
       .demo {
-        padding: 120px 0;
-        background: hsl(var(--muted) / 0.2);
-        border-top: 1px solid hsl(var(--border));
-        border-bottom: 1px solid hsl(var(--border));
+        padding: 140px 0;
+        background: linear-gradient(
+          180deg,
+          var(--bg-secondary) 0%,
+          var(--bg-primary) 100%
+        );
+        border-top: 1px solid var(--border);
       }
 
       .demo-content {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 48px;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 80px;
         align-items: center;
       }
 
       .demo-text h2 {
-        font-size: clamp(36px, 5vw, 48px);
-        font-weight: 800;
-        line-height: 1.2;
+        font-size: clamp(36px, 5vw, 52px);
+        font-weight: 900;
+        line-height: 1.15;
         margin-bottom: 24px;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
       }
 
       .demo-text p {
         font-size: 18px;
-        color: hsl(var(--muted-foreground));
-        margin-bottom: 32px;
+        color: var(--text-secondary);
         line-height: 1.7;
       }
 
+      .demo-visual {
+        position: relative;
+      }
+
       .command-demo {
-        background: hsl(var(--background));
-        border: 1px solid hsl(var(--border));
-        padding: 24px;
-        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--border);
+        padding: 24px 28px;
+        border-radius: 16px;
         font-family: "SF Mono", Monaco, "Courier New", monospace;
-        font-size: 14px;
+        font-size: 15px;
         margin-bottom: 24px;
-        box-shadow: 0 8px 32px hsl(0 0% 0% / 0.4);
+        backdrop-filter: blur(10px);
       }
 
       .command-demo .prompt {
-        color: hsl(var(--accent));
+        color: var(--gradient-4);
         font-weight: 600;
       }
 
       .command-demo .command {
-        color: hsl(var(--foreground));
+        color: var(--text-primary);
       }
 
       .poll-preview {
-        background: hsl(var(--muted) / 0.5);
-        border: 1px solid hsl(var(--border));
-        border-radius: 12px;
-        padding: 28px;
-        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px;
+        backdrop-filter: blur(20px);
       }
 
       .poll-preview h4 {
         font-size: 18px;
         font-weight: 700;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
       .poll-option {
         display: flex;
         align-items: center;
-        padding: 16px 0;
-        gap: 12px;
+        padding: 14px 0;
+        gap: 16px;
       }
 
       .poll-option .emoji {
-        font-size: 20px;
-        width: 32px;
+        font-size: 18px;
+        width: 28px;
       }
 
       .poll-option .label {
         min-width: 100px;
         font-size: 15px;
+        font-weight: 500;
       }
 
       .poll-option .bar {
         flex: 1;
-        height: 32px;
-        background: hsl(var(--muted));
-        border-radius: 8px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
         overflow: hidden;
         position: relative;
       }
@@ -442,67 +516,37 @@
         height: 100%;
         background: linear-gradient(
           90deg,
-          hsl(var(--accent)),
-          hsl(280 85% 70%)
+          var(--gradient-3),
+          var(--gradient-2)
         );
-        border-radius: 8px;
-        transition: width 1s ease;
-        box-shadow: 0 0 20px hsl(var(--accent) / 0.4);
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(196, 78, 255, 0.4);
       }
 
       .poll-option .percentage {
         font-weight: 700;
-        min-width: 60px;
+        min-width: 56px;
         text-align: right;
         font-size: 15px;
-      }
-
-      /* Stats */
-      .stats {
-        padding: 80px 0;
-      }
-
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 48px;
-        text-align: center;
-      }
-
-      .stat-item h3 {
-        font-size: clamp(40px, 5vw, 64px);
-        font-weight: 800;
-        margin-bottom: 8px;
-        background: linear-gradient(
-          135deg,
-          hsl(var(--accent)) 0%,
-          hsl(280 85% 70%) 100%
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .stat-item p {
-        font-size: 16px;
-        color: hsl(var(--muted-foreground));
+        color: var(--text-secondary);
       }
 
       /* Pricing */
       .pricing {
-        padding: 120px 0;
+        padding: 140px 0;
         text-align: center;
       }
 
       .price-card {
-        max-width: 600px;
+        max-width: 580px;
         margin: 0 auto;
-        background: hsl(var(--muted) / 0.3);
-        border: 1px solid hsl(var(--border));
-        padding: 64px 48px;
-        border-radius: 24px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 72px 56px;
+        border-radius: 32px;
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(20px);
       }
 
       .price-card::before {
@@ -514,74 +558,105 @@
         height: 2px;
         background: linear-gradient(
           90deg,
-          transparent,
-          hsl(var(--accent)),
-          transparent
+          var(--gradient-3),
+          var(--gradient-2),
+          var(--gradient-1)
         );
       }
 
+      .price-card::after {
+        content: "";
+        position: absolute;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(196, 78, 255, 0.15),
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
       .price {
-        font-size: clamp(56px, 8vw, 80px);
-        font-weight: 800;
-        margin-bottom: 16px;
+        font-size: clamp(64px, 10vw, 96px);
+        font-weight: 900;
+        margin-bottom: 12px;
         background: linear-gradient(
           135deg,
-          hsl(var(--accent)) 0%,
-          hsl(280 85% 70%) 100%
+          var(--gradient-4),
+          var(--gradient-3),
+          var(--gradient-2)
         );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         line-height: 1;
+        letter-spacing: -0.04em;
       }
 
       .price-subtitle {
         font-size: 24px;
-        color: hsl(var(--muted-foreground));
-        margin-bottom: 32px;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        font-weight: 500;
       }
 
       .price-features {
         display: flex;
-        gap: 24px;
+        gap: 32px;
         justify-content: center;
         flex-wrap: wrap;
-        margin-top: 32px;
+        position: relative;
+        z-index: 1;
       }
 
       .price-feature {
         display: flex;
         align-items: center;
-        gap: 8px;
-        color: hsl(var(--muted-foreground));
+        gap: 10px;
+        color: var(--text-secondary);
         font-size: 15px;
+        font-weight: 500;
+      }
+
+      .price-feature svg {
+        color: var(--gradient-4);
       }
 
       /* Footer */
       footer {
-        padding: 80px 0 40px;
-        border-top: 1px solid hsl(var(--border));
+        padding: 80px 0 48px;
+        border-top: 1px solid var(--border);
       }
 
       .footer-content {
         text-align: center;
       }
 
+      .footer-logo {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 24px;
+      }
+
       .footer-text {
         font-size: 16px;
-        color: hsl(var(--muted-foreground));
-        margin-bottom: 24px;
+        color: var(--text-secondary);
+        margin-bottom: 32px;
       }
 
       .footer-links {
         display: flex;
-        gap: 24px;
+        gap: 32px;
         justify-content: center;
         flex-wrap: wrap;
       }
 
       .footer-links a {
-        color: hsl(var(--foreground));
+        color: var(--text-primary);
         text-decoration: none;
         font-size: 14px;
         font-weight: 500;
@@ -589,72 +664,116 @@
       }
 
       .footer-links a:hover {
-        color: hsl(var(--accent));
+        color: var(--gradient-2);
       }
 
-      @media (max-width: 768px) {
-        .hero {
-          padding: 80px 0 100px;
-        }
+      .footer-bottom {
+        margin-top: 48px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
 
-        .demo-content {
-          grid-template-columns: 1fr;
-          gap: 32px;
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .features-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
 
         .stats-grid {
           grid-template-columns: repeat(2, 1fr);
-          gap: 32px;
+        }
+
+        .demo-content {
+          grid-template-columns: 1fr;
+          gap: 48px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          padding: 40px 0 120px;
+        }
+
+        .hero-logo {
+          width: 90px;
+          height: 90px;
+          margin-bottom: 32px;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
         }
 
         .cta-group {
           flex-direction: column;
+          align-items: center;
+        }
+
+        .cta-primary,
+        .cta-secondary {
+          width: 100%;
+          max-width: 320px;
+          justify-content: center;
         }
 
         .price-features {
           flex-direction: column;
           align-items: center;
+          gap: 20px;
+        }
+
+        .price-card {
+          padding: 48px 32px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="animated-bg"></div>
-
+    <!-- Header -->
     <header>
       <div class="container">
         <div class="header-content">
           <a href="/" class="logo">
-            <span class="logo-icon">🗳️</span>
-            <span>Nimio Poll</span>
+            <span class="logo-text">Nimio Poll</span>
           </a>
           <a href="/api/slack/oauth" class="header-cta">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
                 d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"
                 fill="currentColor"
               />
             </svg>
-            Instalar
+            Instalar en Slack
           </a>
         </div>
       </div>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero">
-      <div class="container">
+      <div
+        class="container"
+        style="display: flex; flex-direction: column; align-items: center"
+      >
+        <img
+          src="./NimioPollAnimationTransparent.gif"
+          alt="Nimio Poll"
+          class="hero-logo"
+        />
         <div class="hero-badge">
-          <span>✨</span>
+          <span class="badge-dot"></span>
           <span>Gratis para siempre • Sin límites</span>
         </div>
         <h1>
-          Encuestas <span class="gradient-text">modernas</span><br />
-          para equipos en Slack
+          Encuestas<br />
+          <span class="gradient-text">extraordinarias</span>
         </h1>
         <p>
           Más allá de Simple Poll. Votación en tiempo real, anonimato opcional,
-          múltiples opciones, expiración automática y todo lo que necesitas para
-          tomar mejores decisiones en equipo.
+          múltiples opciones y todo lo que necesitas para tomar mejores
+          decisiones en equipo.
         </p>
         <div class="cta-group">
           <a href="/api/slack/oauth" class="cta-primary">
@@ -678,6 +797,7 @@
       </div>
     </section>
 
+    <!-- Stats -->
     <section class="stats">
       <div class="container">
         <div class="stats-grid">
@@ -694,13 +814,14 @@
             <p>Funciones avanzadas</p>
           </div>
           <div class="stat-item">
-            <h3><10s</h3>
+            <h3>&lt;10s</h3>
             <p>Instalación rápida</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Features -->
     <section class="features">
       <div class="container">
         <div class="section-header">
@@ -713,7 +834,7 @@
         </div>
         <div class="features-grid">
           <div class="feature-card">
-            <span class="feature-icon">📊</span>
+            <div class="feature-icon">📊</div>
             <h3>Tiempo Real</h3>
             <p>
               Visualiza los votos al instante con barras de progreso y
@@ -721,7 +842,7 @@
             </p>
           </div>
           <div class="feature-card">
-            <span class="feature-icon">🕵️</span>
+            <div class="feature-icon">🕵️</div>
             <h3>Votación Anónima</h3>
             <p>
               Activa el modo anónimo para que nadie sepa quién votó qué.
@@ -729,7 +850,7 @@
             </p>
           </div>
           <div class="feature-card">
-            <span class="feature-icon">☑️</span>
+            <div class="feature-icon">☑️</div>
             <h3>Múltiples Votos</h3>
             <p>
               Permite que los usuarios voten por varias opciones con límite
@@ -737,7 +858,7 @@
             </p>
           </div>
           <div class="feature-card">
-            <span class="feature-icon">⏰</span>
+            <div class="feature-icon">⏰</div>
             <h3>Expiración</h3>
             <p>
               Configura un tiempo límite y la encuesta se cerrará
@@ -745,7 +866,7 @@
             </p>
           </div>
           <div class="feature-card">
-            <span class="feature-icon">➕</span>
+            <div class="feature-icon">➕</div>
             <h3>Opciones Dinámicas</h3>
             <p>
               Permite que los participantes añadan nuevas opciones sobre la
@@ -753,7 +874,7 @@
             </p>
           </div>
           <div class="feature-card">
-            <span class="feature-icon">🔄</span>
+            <div class="feature-icon">🔄</div>
             <h3>Toggle de Votos</h3>
             <p>
               Cambia tu voto en cualquier momento. Haz clic de nuevo para
@@ -764,26 +885,26 @@
       </div>
     </section>
 
+    <!-- Demo -->
     <section class="demo">
       <div class="container">
         <div class="demo-content">
           <div class="demo-text">
             <span class="section-badge">Demo</span>
-            <h2>Crear una encuesta es simple</h2>
+            <h2>Crear una encuesta<br />es simple</h2>
             <p>
               Escribe un comando, añade tu pregunta y opciones. Nimio Poll se
               encarga del resto con una interfaz moderna y resultados en tiempo
               real.
             </p>
           </div>
-          <div>
+          <div class="demo-visual">
             <div class="command-demo">
               <span class="prompt">/poll</span>
               <span class="command">
                 "¿Dónde almorzamos?" "Pizza 🍕" "Sushi 🍣" "Tacos 🌮"</span
               >
             </div>
-
             <div class="poll-preview">
               <h4>📊 ¿Dónde almorzamos?</h4>
               <div class="poll-option">
@@ -816,6 +937,7 @@
       </div>
     </section>
 
+    <!-- Pricing -->
     <section class="pricing">
       <div class="container">
         <div class="section-header">
@@ -871,16 +993,25 @@
       </div>
     </section>
 
+    <!-- Footer -->
     <footer>
       <div class="container">
         <div class="footer-content">
+          <img
+            src="/images/nimiopollanimationtransparent.jpeg"
+            alt="Nimio Poll"
+            class="footer-logo"
+          />
           <p class="footer-text">
-            Hecho con ❤️ para equipos que quieren mejores encuestas
+            Hecho con cariño para equipos que quieren mejores encuestas
           </p>
           <div class="footer-links">
             <a href="https://github.com/illodev/nimio-poll">GitHub</a>
             <a href="/api/slack/oauth">Instalar</a>
           </div>
+          <p class="footer-bottom">
+            © 2026 Nimio Poll. Todos los derechos reservados.
+          </p>
         </div>
       </div>
     </footer>
