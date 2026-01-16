@@ -44,12 +44,20 @@ export function buildPollBlocks(poll: Poll): Block[] {
   const totalVotes = getTotalVotes(poll);
   const uniqueVoters = getUniqueVoters(poll);
 
-  // Header with question
-  blocks.push({
-    type: "header",
-    block_id: BLOCK_IDS.question,
-    text: text(poll.question, "plain_text"),
-  });
+  // Header with question (use section for long questions, header has 150 char limit)
+  if (poll.question.length <= 150) {
+    blocks.push({
+      type: "header",
+      block_id: BLOCK_IDS.question,
+      text: text(poll.question, "plain_text"),
+    });
+  } else {
+    blocks.push({
+      type: "section",
+      block_id: BLOCK_IDS.question,
+      text: text(`*${escapeSlackText(poll.question)}*`),
+    });
+  }
 
   // Poll info/status line
   const statusParts: string[] = [];
