@@ -24,7 +24,7 @@ export function verifySlackSignature(
   signingSecret: string,
   signature: string,
   timestamp: string,
-  body: string
+  body: string,
 ): boolean {
   // Check timestamp is within 5 minutes
   const fiveMinutesAgo = Math.floor(Date.now() / 1000) - 60 * 5;
@@ -42,13 +42,14 @@ export function verifySlackSignature(
 
   return crypto.timingSafeEqual(
     Buffer.from(mySignature, "utf8"),
-    Buffer.from(signature, "utf8")
+    Buffer.from(signature, "utf8"),
   );
 }
 
 /**
  * Parses poll command text into structured data
  * Format: "Question" "Option1" "Option2" ... [--flags]
+ * Images can be added with: "Option" https://image.url or "Option|https://image.url"
  */
 export function parsePollCommand(text: string): ParsedPollCommand {
   const result: ParsedPollCommand = {
@@ -99,37 +100,46 @@ export function parsePollCommand(text: string): ParsedPollCommand {
 
   // Parse quoted strings for question and options
   // This regex handles emojis and special characters inside quotes
-  const quotedRegex = /"([^"]+)"/gu;
-  const matches: string[] = [];
+  const quotedRegex = /"([^"]+)"(?:\s+(https?:\/\/\S+))?/gu;
+  const matches: Array<{ text: string; imageUrl?: string }> = [];
 
   while ((match = quotedRegex.exec(cleanText)) !== null) {
-    matches.push(match[1].trim());
+    const text = match[1].trim();
+    const imageUrl = match[2]?.trim();
+
+    // Check if the text contains an image URL separator (|)
+    const parts = text.split("|").map((p) => p.trim());
+    if (parts.length === 2 && parts[1].match(/^https?:\/\//)) {
+      matches.push({ text: parts[0], imageUrl: parts[1] });
+    } else {
+      matches.push({ text, imageUrl });
+    }
   }
 
   // If no quoted strings found, try to split by common delimiters
   if (matches.length === 0) {
-    // Try splitting by | or newlines
+    // Try splitting by newlines
     const parts = cleanText
-      .split(/[|\n]/)
+      .split(/[\n]/)
       .map((p) => p.trim())
       .filter((p) => p);
     if (parts.length >= 2) {
       result.question = parts[0];
-      result.options = parts.slice(1);
+      result.options = parts.slice(1).map((text) => ({ text }));
     } else {
       result.errors.push(
-        'No se encontraron opciones. Usa comillas: "/poll \\"Pregunta\\" \\"Opción 1\\" \\"Opción 2\\""'
+        'No se encontraron opciones. Usa comillas: "/poll \\"Pregunta\\" \\"Opción 1\\" \\"Opción 2\\""',
       );
     }
   } else {
-    result.question = matches[0];
+    result.question = matches[0].text;
     result.options = matches.slice(1);
   }
 
   // Validate
   if (result.question && result.question.length > LIMITS.maxQuestionLength) {
     result.errors.push(
-      `La pregunta excede ${LIMITS.maxQuestionLength} caracteres.`
+      `La pregunta excede ${LIMITS.maxQuestionLength} caracteres.`,
     );
   }
 
@@ -138,9 +148,18 @@ export function parsePollCommand(text: string): ParsedPollCommand {
   }
 
   result.options.forEach((opt, i) => {
-    if (opt.length > LIMITS.maxOptionLength) {
+    if (opt.text.length > LIMITS.maxOptionLength) {
       result.errors.push(
-        `La opción ${i + 1} excede ${LIMITS.maxOptionLength} caracteres.`
+        `La opción ${i + 1} excede ${LIMITS.maxOptionLength} caracteres.`,
+      );
+    }
+    // Validate image URL format if provided
+    if (
+      opt.imageUrl &&
+      !opt.imageUrl.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i)
+    ) {
+      result.errors.push(
+        `La URL de imagen de la opción ${i + 1} debe ser una URL válida (http/https) que termine en jpg, jpeg, png, gif, o webp.`,
       );
     }
   });
@@ -153,7 +172,7 @@ export function parsePollCommand(text: string): ParsedPollCommand {
  */
 export function getOptionEmoji(
   index: number,
-  style: "numbers" | "letters" | "colors" = "numbers"
+  style: "numbers" | "letters" | "colors" = "numbers",
 ): string {
   const emojiSet = EMOJIS[style];
   return emojiSet[index % emojiSet.length];
@@ -165,7 +184,7 @@ export function getOptionEmoji(
 export function formatVoteBar(
   votes: number,
   totalVotes: number,
-  width: number = 10
+  width: number = 10,
 ): string {
   if (totalVotes === 0) return "░".repeat(width);
 
@@ -190,7 +209,7 @@ export function formatPercentage(votes: number, totalVotes: number): string {
  */
 export function formatVoterNames(
   voters: string[],
-  maxShow: number = 3
+  maxShow: number = 3,
 ): string {
   if (voters.length === 0) return "";
 
@@ -261,7 +280,7 @@ export function generatePollCommand(
     allowAddOptions?: boolean;
     limitVotesPerUser?: number;
     expirationMinutes?: number;
-  }
+  },
 ): string {
   let command = `/poll "${question}"`;
 

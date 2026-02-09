@@ -20,6 +20,7 @@ export interface PollOption {
   id: string;
   text: string;
   emoji?: string;
+  imageUrl?: string;
   votes: Vote[];
 }
 
@@ -148,6 +149,8 @@ export interface Block {
   accessory?: Accessory;
   elements?: (ContextElement | ActionElement)[];
   fields?: TextObject[];
+  image_url?: string;
+  alt_text?: string;
 }
 
 export interface TextObject {
@@ -190,7 +193,12 @@ export interface SelectOption {
 
 export interface ParsedPollCommand {
   question: string;
-  options: string[];
+  options: ParsedOption[];
   settings: Partial<PollSettings>;
   errors: string[];
+}
+
+export interface ParsedOption {
+  text: string;
+  imageUrl?: string;
 }

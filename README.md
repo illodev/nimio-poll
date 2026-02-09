@@ -9,7 +9,8 @@
 ## ✨ Características
 
 - 📊 **Visualización en tiempo real** - Barras de progreso y porcentajes actualizados al instante
-- 🕵️ **Votación anónima** - Oculta la identidad de los votantes
+- �️ **Imágenes en opciones** - Agrega imágenes a las opciones de las encuestas
+- �🕵️ **Votación anónima** - Oculta la identidad de los votantes
 - ☑️ **Múltiples respuestas** - Permite votar por varias opciones
 - ⏰ **Expiración automática** - Cierra encuestas automáticamente con cron job
 - ➕ **Añadir opciones** - Los participantes pueden añadir nuevas opciones
@@ -24,7 +25,6 @@
 1. Ve a [api.slack.com/apps](https://api.slack.com/apps) y crea una nueva app
 2. Selecciona "From scratch" y dale un nombre (ej: "Nimio Poll")
 3. En **OAuth & Permissions**, añade estos Bot Token Scopes:
-
    - `chat:write`
    - `chat:write.public`
    - `commands`
@@ -33,14 +33,12 @@
    - `groups:read`
 
 4. En **Slash Commands**, crea un nuevo comando:
-
    - Command: `/poll`
    - Request URL: `https://nimio-poll.vercel.app/api/slack/command`
    - Description: `Crear encuestas modernas`
    - Usage Hint: `"Pregunta" "Opción 1" "Opción 2" [--anonymous] [--multi]`
 
 5. En **Interactivity & Shortcuts**:
-
    - Activa Interactivity
    - Request URL: `https://nimio-poll.vercel.app/api/slack/interactions`
 
@@ -128,6 +126,22 @@ Para activar el cron job:
 ```
 /poll "¿Dónde almorzamos hoy?" "Pizza" "Sushi" "Tacos"
 ```
+
+### Agregar imágenes a las opciones
+
+Puedes incluir imágenes en las opciones usando URLs públicas:
+
+```
+/poll "¿Cuál prefieres?" "Opción A" https://ejemplo.com/imagen1.jpg "Opción B" https://ejemplo.com/imagen2.png
+```
+
+También puedes usar el formato con separador:
+
+```
+/poll "Vota por tu favorito" "Diseño A|https://ejemplo.com/disenoA.jpg" "Diseño B|https://ejemplo.com/disenoB.jpg"
+```
+
+> **Nota:** Las URLs de imagen deben ser públicas y terminar en `.jpg`, `.jpeg`, `.png`, `.gif`, o `.webp`
 
 ### Opciones disponibles
 

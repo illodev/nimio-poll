@@ -17,7 +17,7 @@ const Storage = getStorage();
  */
 export async function createPoll(
   payload: SlackCommandPayload,
-  botToken: string
+  botToken: string,
 ): Promise<{ success: boolean; message?: string; error?: string }> {
   const parsed = parsePollCommand(payload.text);
 
@@ -36,7 +36,7 @@ export async function createPoll(
   if (payload.text.trim().toLowerCase() === "list") {
     const polls = await Storage.getChannelPolls(
       payload.team_id,
-      payload.channel_id
+      payload.channel_id,
     );
     const activePolls = polls.filter((p) => !p.isClosed);
     return {
@@ -69,9 +69,10 @@ export async function createPoll(
     creatorId: payload.user_id,
     creatorName: payload.user_name,
     question: parsed.question,
-    options: parsed.options.map((text) => ({
+    options: parsed.options.map((option) => ({
       id: generateOptionId(),
-      text,
+      text: option.text,
+      imageUrl: option.imageUrl,
       votes: [],
     })),
     settings: {
@@ -145,7 +146,7 @@ export async function handleVote(
   optionId: string,
   userId: string,
   userName: string,
-  botToken: string
+  botToken: string,
 ): Promise<{ success: boolean; message?: string; poll?: Poll }> {
   const poll = await Storage.getPoll(pollId);
 
@@ -203,7 +204,7 @@ export async function handleVote(
       const userVoteCount = poll.options.reduce(
         (count, opt) =>
           count + opt.votes.filter((v) => v.userId === userId).length,
-        0
+        0,
       );
 
       if (userVoteCount >= poll.settings.limitVotesPerUser) {
@@ -237,7 +238,7 @@ export async function handleVote(
 export async function closePoll(
   pollId: string,
   userId: string,
-  botToken: string
+  botToken: string,
 ): Promise<{ success: boolean; message?: string }> {
   const poll = await Storage.getPoll(pollId);
 
@@ -265,7 +266,7 @@ export async function addPollOption(
   optionText: string,
   userId: string,
   _userName: string,
-  botToken: string
+  botToken: string,
 ): Promise<{ success: boolean; message?: string }> {
   const poll = await Storage.getPoll(pollId);
 
@@ -307,7 +308,7 @@ export async function addPollOption(
  */
 export async function refreshPoll(
   pollId: string,
-  botToken: string
+  botToken: string,
 ): Promise<{ success: boolean; message?: string }> {
   const poll = await Storage.getPoll(pollId);
 

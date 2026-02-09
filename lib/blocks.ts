@@ -21,7 +21,7 @@ import {
  */
 function text(
   content: string,
-  type: "plain_text" | "mrkdwn" = "mrkdwn"
+  type: "plain_text" | "mrkdwn" = "mrkdwn",
 ): TextObject {
   if (type === "plain_text") {
     return { type, text: content, emoji: true };
@@ -85,6 +85,15 @@ export function buildPollBlocks(poll: Poll): Block[] {
     const bar = formatVoteBar(voteCount, totalVotes);
     const percentage = formatPercentage(voteCount, totalVotes);
 
+    // Add image block if the option has an image URL
+    if (option.imageUrl) {
+      blocks.push({
+        type: "image",
+        image_url: option.imageUrl,
+        alt_text: option.text,
+      });
+    }
+
     // Option text with vote visualization
     let optionText = `${emoji}  *${escapeSlackText(option.text)}*\n`;
     optionText += `\`${bar}\` ${percentage} (${voteCount} voto${
@@ -126,7 +135,7 @@ export function buildPollBlocks(poll: Poll): Block[] {
       contextText(
         `${EMOJIS.chart} *${totalVotes}* votos totales  •  ` +
           `${EMOJIS.users} *${uniqueVoters}* participantes  •  ` +
-          `Creada por <@${poll.creatorId}>`
+          `Creada por <@${poll.creatorId}>`,
       ),
     ],
   });
@@ -188,7 +197,7 @@ export function buildPollBlocks(poll: Poll): Block[] {
       blocks.push({
         type: "section",
         text: text(
-          `${EMOJIS.trophy} *Ganador:* ${winner.text} con ${winner.votes.length} votos`
+          `${EMOJIS.trophy} *Ganador:* ${winner.text} con ${winner.votes.length} votos`,
         ),
       });
     }
@@ -224,7 +233,15 @@ export function buildHelpBlocks(): Block[] {
       type: "section",
       text: text(
         "*Crear una encuesta básica:*\n" +
-          '```/poll "¿Cuál es tu color favorito?" "Rojo" "Azul" "Verde"```'
+          '```/poll "¿Cuál es tu color favorito?" "Rojo" "Azul" "Verde"```',
+      ),
+    },
+    {
+      type: "section",
+      text: text(
+        "*Agregar imágenes a las opciones:*\n" +
+          '```/poll "¿Cuál prefieres?" "Opción A" https://ejemplo.com/imagen.jpg "Opción B" https://ejemplo.com/imagen2.png```\n' +
+          'También puedes usar el formato: `"Opción|https://imagen.jpg"`',
       ),
     },
     {
@@ -236,7 +253,7 @@ export function buildHelpBlocks(): Block[] {
           "• `--limit=N` → Limitar a N votos por persona\n" +
           "• `--expires=N` → Expira en N minutos\n" +
           "• `--hide-voters` → Ocultar nombres de votantes\n" +
-          "• `--allow-add` → Permitir añadir opciones"
+          "• `--allow-add` → Permitir añadir opciones",
       ),
     },
     {
@@ -244,7 +261,7 @@ export function buildHelpBlocks(): Block[] {
       text: text(
         "*Ejemplos:*\n" +
           '```/poll "¿Pizza para el almuerzo?" "Sí" "No" --anonymous\n' +
-          '/poll "Elige frameworks" "React" "Vue" "Angular" --multi --limit=2```'
+          '/poll "Elige frameworks" "React" "Vue" "Angular" --multi --limit=2```',
       ),
     },
     { type: "divider" },
@@ -252,7 +269,7 @@ export function buildHelpBlocks(): Block[] {
       type: "context",
       elements: [
         contextText(
-          "💡 _Tip: Puedes usar | para separar opciones sin comillas_"
+          "💡 _Tip: Las URLs de imagen deben terminar en jpg, jpeg, png, gif o webp_",
         ),
       ],
     },
@@ -319,7 +336,7 @@ export function buildAddOptionModal(pollId: string, question: string): object {
  */
 export function buildCopyCommandModal(
   command: string,
-  question: string
+  question: string,
 ): object {
   return {
     type: "modal",
@@ -338,7 +355,7 @@ export function buildCopyCommandModal(
       {
         type: "section",
         text: text(
-          "Selecciona y copia el siguiente comando para recrear esta encuesta:"
+          "Selecciona y copia el siguiente comando para recrear esta encuesta:",
         ),
       },
       {
@@ -353,7 +370,7 @@ export function buildCopyCommandModal(
         label: text("Comando", "plain_text"),
         hint: text(
           "💡 Selecciona todo el texto (Ctrl+A / Cmd+A) y copia (Ctrl+C / Cmd+C)",
-          "plain_text"
+          "plain_text",
         ),
       },
     ],
@@ -389,7 +406,7 @@ export function buildPollListBlocks(polls: Poll[]): Block[] {
       type: "section",
       text: text(
         `*${index + 1}. ${escapeSlackText(poll.question)}*\n` +
-          `${status} • ${totalVotes} votos • Por <@${poll.creatorId}>`
+          `${status} • ${totalVotes} votos • Por <@${poll.creatorId}>`,
       ),
     });
   });
@@ -413,7 +430,7 @@ export function buildAllVotesModal(poll: Poll): object {
       text: text(
         `${emoji} *${escapeSlackText(option.text)}* — ${voteCount} voto${
           voteCount !== 1 ? "s" : ""
-        }`
+        }`,
       ),
     });
 
@@ -443,7 +460,7 @@ export function buildAllVotesModal(poll: Poll): object {
     type: "context",
     elements: [
       contextText(
-        `${EMOJIS.chart} *Total:* ${totalVotes} votos de ${uniqueVoters} participantes`
+        `${EMOJIS.chart} *Total:* ${totalVotes} votos de ${uniqueVoters} participantes`,
       ),
     ],
   });
@@ -474,6 +491,6 @@ function getWinner(poll: Poll): (typeof poll.options)[0] | null {
   if (poll.options.length === 0) return null;
 
   return poll.options.reduce((winner, current) =>
-    current.votes.length > winner.votes.length ? current : winner
+    current.votes.length > winner.votes.length ? current : winner,
   );
 }
