@@ -68,10 +68,18 @@ export function parsePollCommand(text: string): ParsedPollCommand {
     return result;
   }
 
-  // Normalize curly/smart quotes to straight quotes
+  // Normalize curly/smart quotes to straight quotes.
+  // Slack (and macOS/iOS keyboards) auto-convert " into “ ” by default, so
+  // these must be accepted as delimiters. Unicode escapes are used on purpose
+  // so editors/formatters can't silently turn them back into plain ASCII quotes.
   const normalizedText = text
-    .replace(/[""„‟❝❞⹂〝〞＂]/g, '"') // Various double quote styles
-    .replace(/[''‚‛❛❜]/g, "'"); // Various single quote styles
+    // “ ” „ ‟ ❝ ❞ ⹂ 〝 〞 〟 ＂
+    .replace(
+      /[“”„‟❝❞⹂〝〞〟＂]/g,
+      '"',
+    )
+    // ‘ ’ ‚ ‛ ❛ ❜
+    .replace(/[‘’‚‛❛❜]/g, "'");
 
   // Extract flags first
   const flagRegex =
